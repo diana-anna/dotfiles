@@ -63,7 +63,8 @@ This function should only modify configuration layer settings."
             latex-view-with-pdf-tools t
             latex-view-pdf-in-split-window t)
      lsp
-     markdown
+     (markdown	:variables
+		markdown-live-preview-engine 'vmd)
      multiple-cursors
      (org  :variables
            org-enable-org-journal-support t
