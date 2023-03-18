@@ -1,0 +1,7 @@
+[user]
+	email = 17442895+diana-anna@users.noreply.github.com
+	name = Diana Kowalska
+[commit]
+	gpgsign = true
+[core]
+	editor = vim
