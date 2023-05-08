@@ -625,6 +625,8 @@ before packages are loaded."
     ;; allow links to be easily edited after they are inserted
     (setq org-appear-autolinks t)
     (setq org-appear-trigger `always)
+    ;; set default width for images to about 80 chars
+    (setq org-image-actual-width 600)
 
   ;;(use-package org-contacts
     ;;:ensure nil
