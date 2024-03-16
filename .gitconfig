@@ -1,7 +1,13 @@
-[user]
-	email = 17442895+diana-anna@users.noreply.github.com
-	name = Diana Kowalska
 [commit]
 	gpgsign = true
 [core]
 	editor = vim
+[fetch]
+    prune = true
+[github]
+	user = diana-anna
+[merge]
+	conflictstyle = diff3
+[user]
+	name = diana-anna
+	email = 17442895+diana-anna@users.noreply.github.com
