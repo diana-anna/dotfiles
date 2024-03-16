@@ -3,7 +3,7 @@
 [core]
 	editor = vim
 [fetch]
-  prune = true
+	prune = true
 [github]
 	user = diana-anna
 [merge]
