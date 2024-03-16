@@ -1,0 +1,16 @@
+* dotfiles
+
+** .gitconfig
+
+If using a GPG key, do not simply create a link to the ~.gitconfig~ file in this
+repository. Instead, create a ~.gitconfig~ file in the local home directory with
+the following contents:
+
+#+BEGIN_SRC
+[include]
+    path = dotfiles/.gitconfig
+[user]
+	signingkey =
+#+END_SRC
+
+inserting the long form of the GPG key ID you'd like to use.
