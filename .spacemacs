@@ -54,7 +54,7 @@ This function should only modify configuration layer settings."
      javascript
      json
      (latex :variables
-            latex-backend 'lsp
+            latex-backend 'lsp-latex
             latex-build-command "latexmk"
             latex-build-engine 'luatex
             latex-enable-folding t
@@ -78,9 +78,9 @@ This function should only modify configuration layer settings."
            org-enable-appear-support t
            org-capture-templates '(("c" "Contacts" entry (file "~/bulletjournal/contacts.org")
                                     "* %(org-contacts-template-name)
-  :PROPERTIES:
-  :EMAIL: %(org-contacts-template-email)
-  :END:")))
+   :PROPERTIES:
+   :EMAIL: %(org-contacts-template-email)
+   :END:")))
      outshine
      pdf
      python
@@ -102,7 +102,6 @@ This function should only modify configuration layer settings."
      web-beautify
      xkcd
      yaml)
-
 
    ;; List of additional packages that will be installed without being wrapped
    ;; in a layer (generally the packages are installed only and should still be
@@ -303,7 +302,9 @@ It should only modify the values of Spacemacs settings."
    ;; (default t)
    dotspacemacs-colorize-cursor-according-to-state t
 
-   ;; Default font or prioritized list of fonts. The `:size' can be specified as
+   ;; Default font or prioritized list of fonts. This setting has no effect when
+   ;; running Emacs in terminal. The font set here will be used for default and
+   ;; fixed-pitch faces. The `:size' can be specified as
    ;; a non-negative integer (pixel size), or a floating-point (point size).
    ;; Point size is recommended, because it's device independent. (default 10.0)
    dotspacemacs-default-font '("UbuntuMono Nerd Font"
@@ -618,7 +619,6 @@ This function is called only while dumping Spacemacs configuration. You can
 dump."
   )
 
-
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
 This function is called at the very end of Spacemacs startup, after layer
@@ -660,7 +660,6 @@ before packages are loaded."
     ;;my/org-contacts-template
     ;;:empty-lines 1))))
     ))
-
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
