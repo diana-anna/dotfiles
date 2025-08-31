@@ -1,0 +1,246 @@
+#+TITLE: home.nix
+
+* root
+:PROPERTIES:
+:header-args: :noweb yes
+:END:
+
+#+begin_src nix :tangle home.nix
+  { config, pkgs, ... }:
+
+  {
+    <<user-info>>
+
+    <<state-version>>
+
+    <<home-session-path>>
+
+    <<home-packages>>
+
+    <<home-manager>>
+
+    <<emacs>>
+
+    <<starship>>
+
+    <<nix>>
+  }
+#+end_src
+
+** basics
+
+*** user info
+
+#+begin_quote
+Home Manager needs a bit of information about you and the paths it should
+manage.
+#+end_quote
+
+#+NAME: user-info
+#+begin_src nix
+  home.username = "diana";
+  home.homeDirectory = "/home/diana";
+#+end_src
+
+*** state version
+
+#+begin_quote
+This value determines the Home Manager release that your configuration is
+compatible with. This helps avoid breakage when a new Home Manager release
+introduces backwards incompatible changes.
+
+You should not change this value, even if you update Home Manager. If you do
+want to update the value, then make sure to first check the Home Manager release
+notes.
+#+end_quote
+
+#+NAME: state-version
+#+begin_src nix
+  home.stateVersion = "24.05"; # Please read the comment before changing.
+#+end_src
+
+*** dotfiles
+
+#+begin_quote
+Home Manager is pretty good at managing dotfiles. The primary way to manage
+plain files is through 'home.file'.
+#+end_quote
+
+This snippet can be used at the root-level of the config. I am currently not
+managing dotfiles using either of the methods below.
+
+#+NAME: home-file
+#+begin_src nix
+  home.file = {
+    <<example-screenrc>>
+
+    <<example-grade-dotfile>>
+  };
+#+end_src
+
+**** link to dotfiles
+
+#+begin_quote
+Building this configuration will create a copy of 'dotfiles/screenrc' in the Nix
+store. Activating the configuration will then make '~/.screenrc' a symlink to
+the Nix store copy.
+#+end_quote
+
+
+#+NAME: example-screenrc
+#+begin_src nix
+  ".screenrc".source = dotfiles/screenrc
+#+end_src
+
+**** set file content directly
+
+#+begin_quote
+You can also set the file content immediately.
+#+end_quote
+
+#+NAME: example-gradle-dotfile
+#+begin_src nix
+  ".gradle/gradle.properties".text = ''
+    org.gradle.console=verbose
+    org.gradle.daemon.idletimeout=3600000
+  '';
+#+end_src
+
+*** environment variables
+
+#+begin_quote
+Home Manager can also manage your environment variables through
+'home.sessionVariables'. These will be explicitly sourced when using a
+shell provided by Home Manager. If you don't want to manage your shell
+through Home Manager then you have to manually source 'hm-session-vars.sh'
+located at either
+
+ ~/.nix-profile/etc/profile.d/hm-session-vars.sh
+
+or
+
+ ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
+  #
+or
+
+ /etc/profiles/per-user/diana/etc/profile.d/hm-session-vars.sh
+#+end_quote
+
+#+begin_src nix
+  home.sessionVariables = { EDITOR = "emacs"; };
+#+end_src
+
+*** session path
+
+Not part of the home manager template. I honestly don't remember why I put this
+line in lol.
+
+#+NAME: home-session-path
+#+begin_src nix
+  home.sessionPath =
+    [ "$HOME/.nix-profile/bin" "$HOME/.nix-profile/share/applications" ];
+#+end_src
+
+** home packages
+
+#+begin_quote
+The home.packages option allows you to install Nix packages into your
+environment.
+#+end_quote
+
+#+NAME: home-packages
+#+begin_src nix
+  home.packages = with pkgs; [
+    haskellPackages.nixfmt
+    htop
+    ncdu
+    nerd-fonts.ubuntu-mono
+    pandoc
+    pls
+    signal-desktop
+    telegram-desktop
+    texlab # LaTeX LSP
+    tmux
+    tree
+    vim
+
+    <<writeShellScriptBin>>
+  ];
+#+end_src
+
+*** overrides
+
+#+begin_quote
+It is sometimes useful to fine-tune packages, for example, by applying
+overrides. You can do that directly here, just don't forget the parentheses.
+Maybe you want to install Nerd Fonts with a limited number of fonts?
+#+end_quote
+
+This is an old way of overriding nerd fonts and no longer works, but I am
+leaving this here as an example of overrides.
+
+#+NAME: overrides
+#+begin_src nix
+  (pkgs.nerdfonts.override {fonts = [ "FantasqueSansMono" ]; })
+#+end_src
+
+*** simple shell scripts
+
+#+begin_quote
+You can also create simple shell scripts directly inside your
+configuration. For example, this adds a command 'my-hello' to your
+environment:
+(pkgs.writeShellScriptBin "my-hello" ''
+  echo "Hello, ${config.home.username}!"
+'')
+#+end_quote
+
+#+NAME: writeShellScriptBin
+#+begin_src nix
+  (writeShellScriptBin "hm-history" ''
+  nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
+  '')
+  (writeShellScriptBin "hm-news" ''
+  home-manager news --flake ~/dotfiles
+  '')
+  (writeShellScriptBin "hm-switch" ''
+  home-manager switch --flake ~/dotfiles
+  '')
+#+end_src
+
+** programs
+
+*** home manager
+
+#+begin_quote
+Let Home Manager install and manage itself.
+#+end_quote
+
+#+NAME: home-manager
+#+begin_src nix
+  programs.home-manager.enable = true;
+#+end_src
+
+*** emacs
+
+#+NAME: emacs
+#+begin_src nix
+  programs.emacs.enable = true;
+#+end_src
+
+*** starship
+
+#+NAME: starship
+#+begin_src nix
+  programs.starship.enable = true;
+#+end_src
+
+** nix
+
+#+NAME: nix
+#+begin_src nix
+  nix = {
+    package = pkgs.nix;
+    settings.experimental-features = [ "nix-command" "flakes" ];
+  };
+#+end_src
