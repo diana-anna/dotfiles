@@ -23,6 +23,12 @@
     tree
     vim
 
+    (writeShellScriptBin "full-switch" ''
+      cd ~/dotfiles
+      nix flake update
+      home-manager switch --flake .
+      cd -
+    '')
     (writeShellScriptBin "hm-history" ''
       nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
     '')

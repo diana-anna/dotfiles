@@ -197,14 +197,17 @@ environment:
 
 #+NAME: writeShellScriptBin
 #+begin_src nix
-  (writeShellScriptBin "hm-history" ''
-  nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
-  '')
-  (writeShellScriptBin "hm-news" ''
-  home-manager news --flake ~/dotfiles
-  '')
-  (writeShellScriptBin "hm-switch" ''
-  home-manager switch --flake ~/dotfiles
+  (writeShellScriptBin "full-switch" ''
+    cd ~/dotfiles
+    nix flake update
+    home-manager switch --flake .
+    cd -
+  '') (writeShellScriptBin "hm-history" ''
+    nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
+  '') (writeShellScriptBin "hm-news" ''
+    home-manager news --flake ~/dotfiles
+  '') (writeShellScriptBin "hm-switch" ''
+    home-manager switch --flake ~/dotfiles
   '')
 #+end_src
 
