@@ -113,33 +113,21 @@
     javascript
     json
     (latex :variables
-          latex-backend 'lsp-latex
-          latex-build-command "latexmk"
-          latex-build-engine 'luatex
-          latex-enable-folding t
-          latex-enable-magic t
-          latex-refresh-preview t
-          latex-view-with-pdf-tools t
-          latex-view-pdf-in-split-window t)
+           latex-backend 'lsp-latex
+           latex-build-command "latexmk"
+           latex-build-engine 'luatex
+           latex-enable-folding t
+           latex-enable-magic t
+           latex-refresh-preview t
+           latex-view-with-pdf-tools t
+           latex-view-pdf-in-split-window t)
     lsp
     (markdown	:variables
               markdown-live-preview-engine 'vmd)
     multiple-cursors
     (nixos :variables
-          nix-backend 'lsp)
-    (org  :variables
-          org-enable-github-support t
-          org-enable-org-journal-support t
-          org-enable-reveal-js-support t
-          org-enable-valign t
-          org-enable-org-contacts-support t
-          org-contacts-files '("~/bulletjournal/contacts.org")
-          org-enable-appear-support t
-          org-capture-templates '(("c" "Contacts" entry (file "~/bulletjournal/contacts.org")
-                                  "* %(org-contacts-template-name)
-  :PROPERTIES:
-  :EMAIL: %(org-contacts-template-email)
-  :END:")))
+           nix-backend 'lsp)
+    <<org-layer>>
     outshine
     pdf
     python
@@ -149,10 +137,10 @@
     selectric ;; makes typewriter sounds :)
     semantic
     (shell :variables
-          shell-default-height 30
-          shell-default-position 'bottom
-          shell-default-shell 'vterm
-          shell-default-term-shell "/bin/bash")
+           shell-default-height 30
+           shell-default-position 'bottom
+           shell-default-shell 'vterm
+           shell-default-term-shell "/bin/bash")
     spell-checking
     syntax-checking
     version-control
@@ -162,6 +150,28 @@
     xkcd
     yaml)
 #+end_src
+
+**** org
+
+#+NAME: org-layer
+#+begin_src emacs-lisp
+  (org  :variables
+        org-enable-github-support t
+        org-enable-org-journal-support t
+        org-enable-roam-support t
+        org-enable-reveal-js-support t
+        org-enable-valign t
+        org-enable-org-contacts-support t
+        org-contacts-files '("~/bulletjournal/contacts.org")
+        org-enable-appear-support t
+        org-capture-templates '(("c" "Contacts" entry (file "~/bulletjournal/contacts.org")
+                                 "* %(org-contacts-template-name)
+  :PROPERTIES:
+  :EMAIL: %(org-contacts-template-email)
+  :END:")))
+#+end_src
+
+** init
 
 #+NAME: init
 #+begin_src emacs-lisp
@@ -686,37 +696,61 @@
     ;; by default ~/.authinfo will be used
     (setq auth-sources '("~/.authinfo.gpg"))
 
-    (add-hook `org-mode-hook #'custom-org-hook)
+    <<org-user-config>>)
+#+end_src
 
-    (defun custom-org-hook ()
-      ;; allow links to be easily edited after they are inserted
-      (setq org-appear-autolinks t)
-      (setq org-appear-trigger `always)
-      ;; set default width for images to about 80 chars
-      (setq org-image-actual-width 600)
+*** org-mode
 
-      ;;(use-package org-contacts
-      ;;:ensure nil
-      ;;:after org
-      ;;:custom (org-contacts-files '("/bulletjournal/contacts.org")))
+For org-roam, added the ~(org-roam-db-autosync-mode)~ line per the following
+excerpt from the org-roam package documentation that shows up in the emacs help
+menu:
 
-      ;;(use-package org-capture
-      ;;:ensure nil
-      ;;:after org
-      ;;:preface
-      ;;(defvar my/org-contacts-template "* %(org-contacts-template-name)
-      ;;:PROPERTIES:
-      ;;:ADDRESS: %^{289 Cleveland St. Brooklyn, 11206 NY, USA}
-      ;;:BIRTHDAY: %^{yyyy-mm-dd}
-      ;;:EMAIL: %(org-contacts-template-email)
-      ;;:NOTE: %^{NOTE}
-      ;;:END:" "Template for org-contacts.")
-      ;;:custom
-      ;;(org-capture-templates
-      ;;`(("c" "Contact" entry (file+headline "~/bulletjournal/contacts.org" "Friends"),
-      ;;my/org-contacts-template
-      ;;:empty-lines 1))))
-      ))
+#+begin_quote
+In order for the package to correctly work through your interactive session it's
+mandatory to add somewhere to your configuration the next form:
+
+    (org-roam-db-autosync-mode)
+
+The form can be called both, before or after loading the package, which is up to
+your preferences. If you call this before the package is loaded, then it will
+automatically load the package.
+#+end_quote
+
+#+NAME: org-user-config
+#+begin_src emacs-lisp
+  (add-hook `org-mode-hook #'custom-org-hook)
+
+  (defun custom-org-hook ()
+    ;; allow links to be easily edited after they are inserted
+    (setq org-appear-autolinks t)
+    (setq org-appear-trigger `always)
+    ;; set default width for images to about 80 chars
+    (setq org-image-actual-width 600)
+
+    (org-roam-db-autosync-mode)
+
+    ;;(use-package org-contacts
+    ;;:ensure nil
+    ;;:after org
+    ;;:custom (org-contacts-files '("/bulletjournal/contacts.org")))
+
+    ;;(use-package org-capture
+    ;;:ensure nil
+    ;;:after org
+    ;;:preface
+    ;;(defvar my/org-contacts-template "* %(org-contacts-template-name)
+    ;;:PROPERTIES:
+    ;;:ADDRESS: %^{289 Cleveland St. Brooklyn, 11206 NY, USA}
+    ;;:BIRTHDAY: %^{yyyy-mm-dd}
+    ;;:EMAIL: %(org-contacts-template-email)
+    ;;:NOTE: %^{NOTE}
+    ;;:END:" "Template for org-contacts.")
+    ;;:custom
+    ;;(org-capture-templates
+    ;;`(("c" "Contact" entry (file+headline "~/bulletjournal/contacts.org" "Friends"),
+    ;;my/org-contacts-template
+    ;;:empty-lines 1))))
+    )
 #+end_src
 
 ** emacs-custom-settings

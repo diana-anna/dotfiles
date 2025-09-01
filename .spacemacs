@@ -71,6 +71,7 @@ This function should only modify configuration layer settings."
      (org  :variables
            org-enable-github-support t
            org-enable-org-journal-support t
+           org-enable-roam-support t
            org-enable-reveal-js-support t
            org-enable-valign t
            org-enable-org-contacts-support t
@@ -78,9 +79,9 @@ This function should only modify configuration layer settings."
            org-enable-appear-support t
            org-capture-templates '(("c" "Contacts" entry (file "~/bulletjournal/contacts.org")
                                     "* %(org-contacts-template-name)
-   :PROPERTIES:
-   :EMAIL: %(org-contacts-template-email)
-   :END:")))
+     :PROPERTIES:
+     :EMAIL: %(org-contacts-template-email)
+     :END:")))
      outshine
      pdf
      python
@@ -637,6 +638,8 @@ before packages are loaded."
     (setq org-appear-trigger `always)
     ;; set default width for images to about 80 chars
     (setq org-image-actual-width 600)
+
+    (org-roam-db-autosync-mode)
 
     ;;(use-package org-contacts
     ;;:ensure nil
