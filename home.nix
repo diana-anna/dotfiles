@@ -12,6 +12,7 @@
   home.packages = with pkgs; [
     haskellPackages.nixfmt
     htop
+    graphviz # for org-roam-ui
     ncdu
     nerd-fonts.ubuntu-mono
     pandoc

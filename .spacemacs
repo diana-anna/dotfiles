@@ -63,8 +63,8 @@ This function should only modify configuration layer settings."
             latex-view-with-pdf-tools t
             latex-view-pdf-in-split-window t)
      lsp
-     (markdown	:variables
-                markdown-live-preview-engine 'vmd)
+     (markdown :variables
+               markdown-live-preview-engine 'vmd)
      multiple-cursors
      (nixos :variables
             nix-backend 'lsp)
@@ -72,6 +72,7 @@ This function should only modify configuration layer settings."
            org-enable-github-support t
            org-enable-org-journal-support t
            org-enable-roam-support t
+           org-enable-roam-ui t
            org-enable-reveal-js-support t
            org-enable-valign t
            org-enable-org-contacts-support t
