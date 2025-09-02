@@ -154,6 +154,7 @@ environment.
     haskellPackages.nixfmt
     htop
     graphviz # for org-roam-ui
+    <<email-packages>>
     ncdu
     nerd-fonts.ubuntu-mono
     pandoc
@@ -167,6 +168,24 @@ environment.
 
     <<writeShellScriptBin>>
   ];
+#+end_src
+
+*** email
+
+I added these packages to try to read an email exported from Proton Mail to a
+~.eml~ file in emacs. However, turns out the ~.eml~ file is encrypted, so that
+was for nothing. Keeping this so that in the future I have a starting point for
+setting up email in emacs.
+
+Linking a few articles that seem to be useful:
+
+- [[https://beb.ninja/post/email/][My E-Mail configuration: Nix & Home-Manager, Notmuch & mbsync]]
+- [[https://doubleloop.net/2019/09/06/emacs-mu4e-mbsync-and-protonmail/][emacs, mu4e, mbsync and ProtonMail]]
+
+#+NAME: email-packages
+#+begin_src nix
+  mu
+  emacsPackages.mu4e
 #+end_src
 
 *** overrides

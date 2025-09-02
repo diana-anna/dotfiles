@@ -65,6 +65,7 @@ This function should only modify configuration layer settings."
      lsp
      (markdown :variables
                markdown-live-preview-engine 'vmd)
+     mu4e
      multiple-cursors
      (nixos :variables
             nix-backend 'lsp)

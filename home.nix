@@ -13,6 +13,8 @@
     haskellPackages.nixfmt
     htop
     graphviz # for org-roam-ui
+    mu
+    emacsPackages.mu4e
     ncdu
     nerd-fonts.ubuntu-mono
     pandoc
