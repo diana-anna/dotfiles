@@ -727,8 +727,6 @@ automatically load the package.
     ;; set default width for images to about 80 chars
     (setq org-image-actual-width 600)
 
-    (org-roam-db-autosync-mode)
-
     ;;(use-package org-contacts
     ;;:ensure nil
     ;;:after org
@@ -751,6 +749,13 @@ automatically load the package.
     ;;my/org-contacts-template
     ;;:empty-lines 1))))
     )
+
+  (use-package org-roam
+    :ensure t
+    :custom
+    (org-roam-directory "~/Notes")
+    :config
+    (org-roam-db-autosync-mode))
 #+end_src
 
 ** emacs-custom-settings

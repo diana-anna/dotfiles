@@ -639,8 +639,6 @@ before packages are loaded."
     ;; set default width for images to about 80 chars
     (setq org-image-actual-width 600)
 
-    (org-roam-db-autosync-mode)
-
     ;;(use-package org-contacts
     ;;:ensure nil
     ;;:after org
@@ -662,7 +660,14 @@ before packages are loaded."
     ;;`(("c" "Contact" entry (file+headline "~/bulletjournal/contacts.org" "Friends"),
     ;;my/org-contacts-template
     ;;:empty-lines 1))))
-    ))
+    )
+
+  (use-package org-roam
+    :ensure t
+    :custom
+    (org-roam-directory "~/Notes")
+    :config
+    (org-roam-db-autosync-mode)))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
