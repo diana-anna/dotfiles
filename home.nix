@@ -53,4 +53,21 @@
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
   };
+
+  dconf.settings = {
+    "org/gnome/shell" = {
+      favorite-apps = [
+        "org.gnome.Terminal.desktop"
+        "org.gnome.Nautilus.desktop"
+        "htop.desktop"
+        "tresorit.desktop"
+        "emacs.desktop"
+        "firefox_firefox.desktop"
+        "chromium_chromium.desktop"
+        "org.telegram.desktop.desktop"
+        "signal.desktop"
+        "spotify_spotify.desktop"
+      ];
+    };
+  };
 }

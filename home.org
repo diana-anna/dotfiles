@@ -24,6 +24,8 @@
     <<starship>>
 
     <<nix>>
+
+    <<dconf-settings>>
   }
 #+end_src
 
@@ -244,6 +246,12 @@ Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 #+end_src
 
+*** bash
+
+#+begin_src nix
+  programs.bash.enable = true;
+#+end_src
+
 *** emacs
 
 #+NAME: emacs
@@ -265,5 +273,52 @@ Let Home Manager install and manage itself.
   nix = {
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
+  };
+#+end_src
+
+** GNOME
+
+To find the list of available desktop files for programs installed with
+home-manager, run
+
+#+begin_src sh
+  ls ~/.nix-profile/share/applications
+#+end_src
+
+According to [[https://askubuntu.com/questions/1160737/how-to-find-desktop-file-location-for-a-particular-application][this ask Ubuntu post]], the following is where Ubuntu searches for
+these ~.desktop~ files:
+
+#+begin_quote
+Multiple .desktop launchers with the same name may exist on the system. The one
+that is in use depends on where it resides.
+
+The system first searches .desktop files in your local
+~/.local/share/applications directory, and then searches applications
+directories that exist under the directories included in the variable
+$XDG_DATA_DIRS.
+#+end_quote
+
+For some reason though, the signal desktop icon isn't coming through, even
+though I've checked that its desktop file is in
+~\~/.nix-profile/share/applications~. And the Telegram desktop icon is showing
+up, but nothing happens when I click on it.
+
+#+NAME: dconf-settings
+#+begin_src nix
+  dconf.settings = {
+    "org/gnome/shell" = {
+        favorite-apps = [
+          "org.gnome.Terminal.desktop"
+          "org.gnome.Nautilus.desktop"
+          "htop.desktop"
+          "tresorit.desktop"
+          "emacs.desktop"
+          "firefox_firefox.desktop"
+          "chromium_chromium.desktop"
+          "org.telegram.desktop.desktop"
+          "signal.desktop"
+          "spotify_spotify.desktop"
+        ];
+    };
   };
 #+end_src
