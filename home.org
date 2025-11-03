@@ -200,7 +200,7 @@ Linking a few articles that seem to be useful:
 #+NAME: email-packages
 #+begin_src nix
   mu
-  emacsPackages.mu4e
+  emacs.pkgs.mu4e
 #+end_src
 
 *** fonts
@@ -208,11 +208,11 @@ Linking a few articles that seem to be useful:
 #+NAME: fonts-packages
 #+begin_src nix
   nerd-fonts.ubuntu-mono
-  nerd-fonts.symbols-only
-  emacsPackages.all-the-icons-nerd-fonts
 #+end_src
 
 *** nix
+
+- ~nil~ is a nix LSP
 
 #+NAME: nix-packages
 #+begin_src nix
@@ -337,14 +337,14 @@ Let Home Manager install and manage itself.
 #+begin_src nix
   programs.git = {
     enable = true;
-    package = pkgs.gitAndTools.gitFull;
-    userName = "diana-anna";
-    userEmail = "17442895+diana-anna@users.noreply.github.com";
-    extraConfig = {
+    package = pkgs.gitFull;
+    settings = {
       fetch.prune = true;
       github.user = "diana-anna";
       pull = { rebase = false; };
       push = { autoSetupRemote = true; };
+      user.email = "17442895+diana-anna@users.noreply.github.com";
+      user.name = "diana-anna";
     };
   };
 #+end_src

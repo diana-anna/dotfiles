@@ -12,10 +12,8 @@
   home.packages = with pkgs; [
     bat
     mu
-    emacsPackages.mu4e
+    emacs.pkgs.mu4e
     nerd-fonts.ubuntu-mono
-    nerd-fonts.symbols-only
-    emacsPackages.all-the-icons-nerd-fonts
     graphviz # for org-roam-ui
     htop
     imagemagick
@@ -88,14 +86,14 @@
 
   programs.git = {
     enable = true;
-    package = pkgs.gitAndTools.gitFull;
-    userName = "diana-anna";
-    userEmail = "17442895+diana-anna@users.noreply.github.com";
-    extraConfig = {
+    package = pkgs.gitFull;
+    settings = {
       fetch.prune = true;
       github.user = "diana-anna";
       pull = { rebase = false; };
       push = { autoSetupRemote = true; };
+      user.email = "17442895+diana-anna@users.noreply.github.com";
+      user.name = "diana-anna";
     };
   };
 
