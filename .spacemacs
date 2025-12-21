@@ -94,9 +94,9 @@ This function should only modify configuration layer settings."
      semantic
      (shell :variables
             shell-default-height 30
-            shell-default-position 'bottom
-            shell-default-shell 'vterm
-            shell-default-term-shell "/bin/bash")
+            shell-default-position 'bottom)
+     ;;shell-default-shell 'vterm
+     ;;shell-default-term-shell "/bin/bash")
      spell-checking
      syntax-checking
      version-control
@@ -507,9 +507,9 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-persistent-server nil
 
    ;; List of search tool executable names. Spacemacs uses the first installed
-   ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
-   ;; (default '("rg" "ag" "pt" "ack" "grep"))
-   dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
+   ;; tool of the list. Supported tools are `rg', `ag', `ack' and `grep'.
+   ;; (default '("rg" "ag" "ack" "grep"))
+   dotspacemacs-search-tools '("rg" "ag" "ack" "grep")
 
    ;; The backend used for undo/redo functionality. Possible values are
    ;; `undo-fu', `undo-redo' and `undo-tree' see also `evil-undo-system'.

@@ -1,13 +1,13 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+  inherit (pkgs.stdenv) isDarwin;
+  homeDirectory = if isDarwin then "/Users/diana" else "/home/diana";
+in {
   home.username = "diana";
-  home.homeDirectory = "/home/diana";
+  home.homeDirectory = homeDirectory;
 
   home.stateVersion = "25.05"; # Please read the comment before changing.
-
-  home.sessionPath =
-    [ "$HOME/.nix-profile/bin" "$HOME/.nix-profile/share/applications" ];
 
   home.packages = with pkgs; [
     bat
@@ -15,15 +15,17 @@
     emacs.pkgs.mu4e
     nerd-fonts.ubuntu-mono
     graphviz # for org-roam-ui
+    gnupg
     htop
     imagemagick
     haskellPackages.nixfmt
+    nerd-fonts.ubuntu-mono
     nil
     ncdu
     pandoc
     pls
     ripgrep
-    signal-desktop
+    silver-searcher
     telegram-desktop
     texlab # LaTeX LSP
     tmux
@@ -78,11 +80,6 @@
   programs.bash.enable = true;
 
   programs.emacs.enable = true;
-
-  programs.ghostty = {
-    enable = true;
-    settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
-  };
 
   programs.git = {
     enable = true;
@@ -409,36 +406,12 @@
     };
   };
 
+  programs.zsh.enable = true;
+
   fonts.fontconfig.enable = true;
 
   nix = {
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
   };
-
-  dconf.settings = {
-    "org/gnome/shell" = {
-      favorite-apps = [
-        "org.gnome.Terminal.desktop"
-        "org.gnome.Nautilus.desktop"
-        "Alacritty.desktop"
-        "htop.desktop"
-        "tresorit.desktop"
-        "emacs.desktop"
-        "firefox_firefox.desktop"
-        "chromium_chromium.desktop"
-        "org.telegram.desktop.desktop"
-        "signal.desktop"
-        "spotify_spotify.desktop"
-      ];
-    };
-    "org/gnome/terminal/legacy/profiles:/:1d4804e8-44e6-4c2b-a37c-95789cad0e61" =
-      {
-        font = "UbuntuMono Nerd Font Mono 12";
-        use-system-font = false;
-        visible-name = "diana";
-      };
-  };
-
-  xdg.enable = true;
 }

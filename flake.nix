@@ -11,7 +11,7 @@
 
   outputs = inputs@{ self, nixpkgs, home-manager }:
     let
-      system = "x86_64-linux";
+      system = "aarch64-darwin";
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       homeConfigurations."diana" = home-manager.lib.homeManagerConfiguration {
