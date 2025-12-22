@@ -1,15 +1,11 @@
 { config, lib, pkgs, ... }:
 
 let
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (lib) mkIf;
+  inherit (lib.lists) optionals;
+  inherit (pkgs.stdenv) isDarwin isLinux;
   homeDirectory = if isDarwin then "/Users/diana" else "/home/diana";
-in {
-  home.username = "diana";
-  home.homeDirectory = homeDirectory;
-
-  home.stateVersion = "25.05"; # Please read the comment before changing.
-
-  home.packages = with pkgs; [
+  common-packages = with pkgs; [
     bat
     mu
     emacs.pkgs.mu4e
@@ -19,7 +15,6 @@ in {
     htop
     imagemagick
     haskellPackages.nixfmt
-    nerd-fonts.ubuntu-mono
     nil
     ncdu
     pandoc
@@ -48,6 +43,14 @@ in {
       home-manager switch --flake ~/dotfiles
     '')
   ];
+  linux-packages = with pkgs; [ signal-desktop ];
+in {
+  home.username = "diana";
+  home.homeDirectory = homeDirectory;
+
+  home.stateVersion = "25.05"; # Please read the comment before changing.
+
+  home.packages = common-packages ++ optionals isLinux linux-packages;
 
   programs.home-manager.enable = true;
 
@@ -77,9 +80,14 @@ in {
     theme = "ashes_light";
   };
 
-  programs.bash.enable = true;
+  programs.bash.enable = isLinux;
 
   programs.emacs.enable = true;
+
+  programs.ghostty = {
+    enable = isLinux;
+    settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
+  };
 
   programs.git = {
     enable = true;
@@ -406,7 +414,7 @@ in {
     };
   };
 
-  programs.zsh.enable = true;
+  programs.zsh.enable = isDarwin;
 
   fonts.fontconfig.enable = true;
 
@@ -414,4 +422,30 @@ in {
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
   };
+
+  dconf.settings = mkIf isLinux {
+    "org/gnome/shell" = {
+      favorite-apps = [
+        "org.gnome.Terminal.desktop"
+        "org.gnome.Nautilus.desktop"
+        "Alacritty.desktop"
+        "htop.desktop"
+        "tresorit.desktop"
+        "emacs.desktop"
+        "firefox_firefox.desktop"
+        "chromium_chromium.desktop"
+        "org.telegram.desktop.desktop"
+        "signal.desktop"
+        "spotify_spotify.desktop"
+      ];
+    };
+    "org/gnome/terminal/legacy/profiles:/:1d4804e8-44e6-4c2b-a37c-95789cad0e61" =
+      {
+        font = "UbuntuMono Nerd Font Mono 12";
+        use-system-font = false;
+        visible-name = "diana";
+      };
+  };
+
+  xdg.enable = false;
 }

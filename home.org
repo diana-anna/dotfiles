@@ -8,12 +8,18 @@
 #+begin_src nix :tangle home.nix
   { config, lib, pkgs, ... }:
 
+  let
+    inherit (lib) mkIf;
+    inherit (lib.lists) optionals;
+    inherit (pkgs.stdenv) isDarwin isLinux;
+    homeDirectory = if isDarwin then "/Users/diana" else "/home/diana";
+    <<common-packages>>
+    <<linux-packages>>
+  in
   {
     <<user-info>>
 
     <<state-version>>
-
-    <<home-session-path>>
 
     <<home-packages>>
 
@@ -30,6 +36,8 @@
     <<git>>
 
     <<starship>>
+
+    <<zsh>>
 
     <<fonts>>
 
@@ -53,7 +61,7 @@ manage.
 #+NAME: user-info
 #+begin_src nix
   home.username = "diana";
-  home.homeDirectory = "/home/diana";
+  home.homeDirectory = homeDirectory;
 #+end_src
 
 *** state version
@@ -162,11 +170,19 @@ environment.
 
 #+NAME: home-packages
 #+begin_src nix
-  home.packages = with pkgs; [
+  home.packages = common-packages ++ optionals isLinux linux-packages;
+#+end_src
+
+*** common
+
+#+NAME: common-packages
+#+begin_src nix
+  common-packages = with pkgs; [
     bat
     <<email-packages>>
     <<fonts-packages>>
     graphviz # for org-roam-ui
+    gnupg
     htop
     imagemagick
     <<nix-packages>>
@@ -174,7 +190,7 @@ environment.
     pandoc
     pls
     ripgrep
-    signal-desktop
+    silver-searcher
     telegram-desktop
     texlab # LaTeX LSP
     tmux
@@ -185,7 +201,7 @@ environment.
   ];
 #+end_src
 
-*** email
+**** email
 
 I added these packages to try to read an email exported from Proton Mail to a
 ~.eml~ file in emacs. However, turns out the ~.eml~ file is encrypted, so that
@@ -203,14 +219,14 @@ Linking a few articles that seem to be useful:
   emacs.pkgs.mu4e
 #+end_src
 
-*** fonts
+**** fonts
 
 #+NAME: fonts-packages
 #+begin_src nix
   nerd-fonts.ubuntu-mono
 #+end_src
 
-*** nix
+**** nix
 
 - ~nil~ is a nix LSP
 
@@ -220,7 +236,7 @@ Linking a few articles that seem to be useful:
   nil
 #+end_src
 
-*** overrides
+**** overrides
 
 #+begin_quote
 It is sometimes useful to fine-tune packages, for example, by applying
@@ -235,6 +251,17 @@ leaving this here as an example of overrides.
 #+begin_src nix
   (pkgs.nerdfonts.override {fonts = [ "FantasqueSansMono" ]; })
 #+end_src
+
+*** Linux packages
+
+#+NAME: linux-packages
+#+begin_src nix
+  linux-packages = with pkgs; [
+    signal-desktop
+  ];
+#+end_src
+
+*** macOS packages
 
 *** simple shell scripts
 
@@ -311,7 +338,7 @@ Let Home Manager install and manage itself.
 
 #+NAME: bash
 #+begin_src nix
-  programs.bash.enable = true;
+  programs.bash.enable = isLinux;
 #+end_src
 
 *** emacs
@@ -326,7 +353,7 @@ Let Home Manager install and manage itself.
 #+NAME: ghostty
 #+begin_src nix
   programs.ghostty = {
-    enable = true;
+    enable = isLinux;
     settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
   };
 #+end_src
@@ -666,6 +693,13 @@ Let Home Manager install and manage itself.
   };
 #+end_src
 
+*** zsh
+
+#+NAME: zsh
+#+begin_src nix
+  programs.zsh.enable = isDarwin;
+#+end_src
+
 ** fonts
 
 Needed on Debian-based systems for fonts installed with nix to be usable.
@@ -714,7 +748,7 @@ up, but nothing happens when I click on it.
 
 #+NAME: dconf-settings
 #+begin_src nix
-  dconf.settings = {
+  dconf.settings = mkIf isLinux {
     "org/gnome/shell" = {
         favorite-apps = [
           "org.gnome.Terminal.desktop"
@@ -751,7 +785,9 @@ icons appear for starship prompt.
 
 ** XDG
 
+Not sure why I added this in the first place lol.
+
 #+NAME: xdg
 #+begin_src nix
-  xdg.enable = true;
+  xdg.enable = false;
 #+end_src
