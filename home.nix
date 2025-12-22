@@ -7,13 +7,18 @@ let
   homeDirectory = if isDarwin then "/Users/diana" else "/home/diana";
   common-packages = with pkgs; [
     bat
+    btop
     mu
     emacs.pkgs.mu4e
     nerd-fonts.ubuntu-mono
     graphviz # for org-roam-ui
     gnupg
     htop
+    hunspell
+    hunspellDicts.en_US
+    hunspellDicts.pl_PL
     imagemagick
+    ispell
     haskellPackages.nixfmt
     nil
     ncdu

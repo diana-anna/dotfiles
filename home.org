@@ -179,12 +179,17 @@ environment.
 #+begin_src nix
   common-packages = with pkgs; [
     bat
+    btop
     <<email-packages>>
     <<fonts-packages>>
     graphviz # for org-roam-ui
     gnupg
     htop
+    hunspell
+    hunspellDicts.en_US
+    hunspellDicts.pl_PL
     imagemagick
+    ispell
     <<nix-packages>>
     ncdu
     pandoc
