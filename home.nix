@@ -89,6 +89,21 @@ in {
 
   programs.emacs.enable = true;
 
+  programs.firefox = {
+    enable = isDarwin;
+    profiles.diana = {
+      settings = {
+        "browser.newtabpage.activity-stream.feeds.system.topstories" = false;
+        "browser.newtabpage.activity-stream.feeds.topsites" = false;
+        "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+        "browser.shell.checkDefaultBrowser" = false;
+        "extensions.formautofill.addresses.enabled" = false;
+        "extensions.formautofill.creditCards.enabled" = false;
+        "signon.rememberSignons" = false;
+      };
+    };
+  };
+
   programs.ghostty = {
     enable = isLinux;
     settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };

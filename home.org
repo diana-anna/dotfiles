@@ -31,6 +31,8 @@
 
     <<emacs>>
 
+    <<firefox>>
+
     <<ghostty>>
 
     <<git>>
@@ -351,6 +353,29 @@ Let Home Manager install and manage itself.
 #+NAME: emacs
 #+begin_src nix
   programs.emacs.enable = true;
+#+end_src
+
+*** firefox
+
+Only enable firefox for macOS for now to not affect the current installation of
+firefox on my Ubuntu laptop.
+
+#+NAME: firefox
+#+begin_src nix
+  programs.firefox = {
+    enable = isDarwin;
+    profiles.diana = {
+      settings = {
+        "browser.newtabpage.activity-stream.feeds.system.topstories" = false;
+        "browser.newtabpage.activity-stream.feeds.topsites" = false;
+        "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+        "browser.shell.checkDefaultBrowser" = false;
+        "extensions.formautofill.addresses.enabled" = false;
+        "extensions.formautofill.creditCards.enabled" = false;
+        "signon.rememberSignons" = false;
+      };
+    };
+  };
 #+end_src
 
 *** ghostty
