@@ -9,8 +9,9 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-utils, home-manager }:
+  outputs = inputs@{ self, nixpkgs, home-manager }:
     let
+      systems = [ "aarch64-darwin" "x86_64-linux" ];
       mkHome = system:
         home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${system};
@@ -20,8 +21,8 @@
           # Optionally use extraSpecialArgs
           # to pass through arguments to home.nix
         };
-      forAllSystems = nixpkgs.lib.genAttrs' [ "aarch64-darwin" "x86_64-linux" ]
-        (system: nixpkgs.lib.nameValuePair ("diana.${system}") (mkHome system ));
+      forAllSystems = nixpkgs.lib.genAttrs' systems
+        (system: nixpkgs.lib.nameValuePair ("diana.${system}") (mkHome system));
 
     in { homeConfigurations = forAllSystems; };
 }
