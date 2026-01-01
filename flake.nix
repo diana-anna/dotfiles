@@ -21,8 +21,9 @@
           # Optionally use extraSpecialArgs
           # to pass through arguments to home.nix
         };
-      forAllSystems = nixpkgs.lib.genAttrs' systems
-        (system: nixpkgs.lib.nameValuePair ("diana.${system}") (mkHome system));
+      mkHomeConfig = system:
+        nixpkgs.lib.nameValuePair ("diana.${system}") (mkHome system);
+      forAllSystems = f: nixpkgs.lib.genAttrs' systems f;
 
-    in { homeConfigurations = forAllSystems; };
+    in { homeConfigurations = forAllSystems mkHomeConfig; };
 }
