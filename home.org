@@ -23,23 +23,7 @@
 
     <<home-packages>>
 
-    <<home-manager>>
-
-    <<alacritty>>
-
-    <<bash>>
-
-    <<emacs>>
-
-    <<firefox>>
-
-    <<ghostty>>
-
-    <<git>>
-
-    <<starship>>
-
-    <<zsh>>
+    <<programs>>
 
     <<fonts>>
 
@@ -299,6 +283,31 @@ environment:
 
 ** programs
 
+#+NAME: programs
+#+begin_src nix
+  programs = {
+      <<home-manager>>
+
+      <<alacritty>>
+
+      <<bash>>
+
+      <<emacs>>
+
+      <<firefox>>
+
+      <<ghostty>>
+
+      <<git>>
+
+      <<lsd>>
+
+      <<starship>>
+
+      <<zsh>>
+  };
+#+end_src
+
 *** home manager
 
 #+begin_quote
@@ -307,14 +316,14 @@ Let Home Manager install and manage itself.
 
 #+NAME: home-manager
 #+begin_src nix
-  programs.home-manager.enable = true;
+  home-manager.enable = true;
 #+end_src
 
 *** alacritty
 
 #+NAME: alacritty
 #+begin_src nix
-  programs.alacritty = {
+  alacritty = {
     enable = true;
     settings = {
       font = {
@@ -345,14 +354,14 @@ Let Home Manager install and manage itself.
 
 #+NAME: bash
 #+begin_src nix
-  programs.bash.enable = isLinux;
+  bash.enable = isLinux;
 #+end_src
 
 *** emacs
 
 #+NAME: emacs
 #+begin_src nix
-  programs.emacs.enable = true;
+  emacs.enable = true;
 #+end_src
 
 *** firefox
@@ -362,7 +371,7 @@ firefox on my Ubuntu laptop.
 
 #+NAME: firefox
 #+begin_src nix
-  programs.firefox = {
+  firefox = {
     enable = isDarwin;
     profiles.diana = {
       settings = {
@@ -382,7 +391,7 @@ firefox on my Ubuntu laptop.
 
 #+NAME: ghostty
 #+begin_src nix
-  programs.ghostty = {
+  ghostty = {
     enable = isLinux;
     settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
   };
@@ -392,7 +401,7 @@ firefox on my Ubuntu laptop.
 
 #+NAME: git
 #+begin_src nix
-  programs.git = {
+  git = {
     enable = true;
     package = pkgs.gitFull;
     settings = {
@@ -406,11 +415,21 @@ firefox on my Ubuntu laptop.
   };
 #+end_src
 
+*** lsd
+
+#+NAME: lsd
+#+begin_src nix
+  lsd = {
+    enable = true;
+    enableBashIntegration = isLinux;
+    enableZshIntegration = isDarwin;
+  };
+#+end_src
 *** starship
 
 #+NAME: starship
 #+begin_src nix
-  programs.starship = {
+  starship = {
     enable = true;
     settings = {
       aws.disabled = true;
@@ -727,7 +746,7 @@ firefox on my Ubuntu laptop.
 
 #+NAME: zsh
 #+begin_src nix
-  programs.zsh.enable = isDarwin;
+  zsh.enable = isDarwin;
 #+end_src
 
 ** fonts
