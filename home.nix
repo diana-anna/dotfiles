@@ -41,21 +41,33 @@ let
     (writeShellScriptBin "hm-history" ''
       nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
     '')
+  ];
+  linux-packages = with pkgs; [
+    signal-desktop
+
     (writeShellScriptBin "hm-news" ''
-      home-manager news --flake ~/dotfiles
+      home-manager news --flake ~/dotfiles#diana.x86_64-linux
     '')
     (writeShellScriptBin "hm-switch" ''
-      home-manager switch --flake ~/dotfiles
+      home-manager switch --flake ~/dotfiles#diana.x86_64-linux
     '')
   ];
-  linux-packages = with pkgs; [ signal-desktop ];
+  darwin-packages = with pkgs; [
+    (writeShellScriptBin "hm-news" ''
+      home-manager news --flake ~/dotfiles#diana.aarch64-darwin
+    '')
+    (writeShellScriptBin "hm-switch" ''
+      home-manager switch --flake ~/dotfiles#diana.aarch64-darwin
+    '')
+  ];
 in {
   home.username = "diana";
   home.homeDirectory = homeDirectory;
 
   home.stateVersion = "25.05"; # Please read the comment before changing.
 
-  home.packages = common-packages ++ optionals isLinux linux-packages;
+  home.packages = common-packages ++ optionals isLinux linux-packages
+    ++ optionals isDarwin darwin-packages;
 
   programs = {
     home-manager.enable = true;
