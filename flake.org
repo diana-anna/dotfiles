@@ -1,0 +1,82 @@
+#+TITLE: flake.nix
+
+* root
+:PROPERTIES:
+:header-args: :noweb yes
+:END:
+
+#+begin_src nix :tangle flake.nix
+  {
+    description = "Diana's Home Manager Flake";
+
+    inputs = {
+      nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+      home-manager = {
+        url = "github:nix-community/home-manager";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+    };
+
+    outputs = inputs@{ self, nixpkgs, home-manager }:
+      let
+        systems = [ "aarch64-darwin" "x86_64-linux" ];
+        mkHome = system:
+          home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.${system};
+
+            modules = [ ./home.nix ];
+
+            # Optionally use extraSpecialArgs
+            # to pass through arguments to home.nix
+            extraSpecialArgs = { inherit system; };
+          };
+        mkHomeConfig = system:
+          nixpkgs.lib.nameValuePair ("diana.${system}") (mkHome system);
+        forAllSystems = f: nixpkgs.lib.genAttrs' systems f;
+
+      in { homeConfigurations = forAllSystems mkHomeConfig; };
+  }
+#+end_src
+
+** system-specific home manager configurations
+
+This took me a very long time to figure out. I'm saving a few resources below to
+reference later when adding darwin and nixOS configs.
+
+*** [[https://blog.kubukoz.com/flakes-first-steps/][Flakes First Steps]]
+
+Good blog post on the basics of nix flakes. Includes information on why using
+~builtins.currentSystem~ is impure. This post introduced me to the ~flake-utils~
+flake, which I then attempted to use in my own config.
+
+*** [[https://github.com/nix-community/home-manager/issues/3075#issuecomment-1330661815][flakes: per-system config on GitHub Issues]]
+
+After adding ~flake-utils~, I got the error that the above GitHub Issue
+mentions. After looking into it further, I learned that Home Manager expects the
+flake output to have one of a few certain structures, including
+~homeConfigurations."diana".activationPackage~ and
+~packages.x86_64-linux.homeConfigurations."diana".activationPackage~. But my
+config was producing something like
+~homeConfigurations.aarch64-darwin."diana".activationPackage~ or
+~homeConfigurations."diana".aarch64-darwin.activationPackage~, depending on how
+exactly I set up my config. Note that the second pattern did not match the
+pattern nix was looking for when I tried running ~home-manager switch --flake
+.#diana.aarch64-darwin~, because in that case it was looking for
+~homeConfigurations."diana.aarch64-darwin".activationPackage~. One solution here
+was to prefix ~packages~ to the beginning of the ~homeConfigurations~ variable,
+but after doing that I got an error after running ~nix flake show~: ~warning:
+packages.aarch64-darwin.homeConfigurations.name is not a derivation~. Although
+running home manager seemed to work, I wasn't sure if I should ignore this
+warning or not, so I tried other solutions. I finally decided to iterate through
+the systems I want to support myself, and after tweaking the config, I found a
+solution!
+
+** nix repl
+
+You can use ~nix repl~ to inspect the flake, which is very helpful when debugging.
+
+Here are some helpful commands once you are inside the repl:
+
+- ~:lf .~: loads the flake in the current directory into the repl
+- ~outputs~: Look at the outputs variable
+- ~outputs.homeConfigurations~: you can keep looking deeper into an object

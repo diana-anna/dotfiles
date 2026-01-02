@@ -6,30 +6,24 @@
 :END:
 
 #+begin_src nix :tangle home.nix
-  { config, lib, pkgs, ... }:
+  { config, lib, pkgs, system, ... }:
 
-  {
+  let
+    inherit (lib) mkIf;
+    inherit (lib.lists) optionals;
+    inherit (pkgs.stdenv) isDarwin isLinux;
+    homeDirectory = if isDarwin then "/Users/diana" else "/home/diana";
+    <<common-packages>>
+    <<linux-packages>>
+    <<darwin-packages>>
+  in {
     <<user-info>>
 
     <<state-version>>
 
-    <<home-session-path>>
-
     <<home-packages>>
 
-    <<home-manager>>
-
-    <<alacritty>>
-
-    <<bash>>
-
-    <<emacs>>
-
-    <<ghostty>>
-
-    <<git>>
-
-    <<starship>>
+    <<programs>>
 
     <<fonts>>
 
@@ -53,7 +47,7 @@ manage.
 #+NAME: user-info
 #+begin_src nix
   home.username = "diana";
-  home.homeDirectory = "/home/diana";
+  home.homeDirectory = homeDirectory;
 #+end_src
 
 *** state version
@@ -162,19 +156,33 @@ environment.
 
 #+NAME: home-packages
 #+begin_src nix
-  home.packages = with pkgs; [
+  home.packages = common-packages ++ optionals isLinux linux-packages
+    ++ optionals isDarwin darwin-packages;
+#+end_src
+
+*** common
+
+#+NAME: common-packages
+#+begin_src nix
+  common-packages = with pkgs; [
     bat
+    btop
     <<email-packages>>
     <<fonts-packages>>
     graphviz # for org-roam-ui
+    gnupg
     htop
+    hunspell
+    hunspellDicts.en_US
+    hunspellDicts.pl_PL
     imagemagick
+    ispell
     <<nix-packages>>
     ncdu
     pandoc
     pls
     ripgrep
-    signal-desktop
+    silver-searcher
     telegram-desktop
     texlab # LaTeX LSP
     tmux
@@ -185,7 +193,7 @@ environment.
   ];
 #+end_src
 
-*** email
+**** email
 
 I added these packages to try to read an email exported from Proton Mail to a
 ~.eml~ file in emacs. However, turns out the ~.eml~ file is encrypted, so that
@@ -203,14 +211,14 @@ Linking a few articles that seem to be useful:
   emacs.pkgs.mu4e
 #+end_src
 
-*** fonts
+**** fonts
 
 #+NAME: fonts-packages
 #+begin_src nix
   nerd-fonts.ubuntu-mono
 #+end_src
 
-*** nix
+**** nix
 
 - ~nil~ is a nix LSP
 
@@ -220,7 +228,7 @@ Linking a few articles that seem to be useful:
   nil
 #+end_src
 
-*** overrides
+**** overrides
 
 #+begin_quote
 It is sometimes useful to fine-tune packages, for example, by applying
@@ -234,6 +242,22 @@ leaving this here as an example of overrides.
 #+NAME: overrides
 #+begin_src nix
   (pkgs.nerdfonts.override {fonts = [ "FantasqueSansMono" ]; })
+#+end_src
+
+*** Linux packages
+
+#+NAME: linux-packages
+#+begin_src nix
+  linux-packages = with pkgs; [
+    signal-desktop
+  ];
+#+end_src
+
+*** macOS packages
+
+#+NAME: darwin-packages
+#+begin_src nix
+  darwin-packages = with pkgs; [];
 #+end_src
 
 *** simple shell scripts
@@ -254,16 +278,44 @@ environment:
     nix flake update
     home-manager switch --flake .
     cd -
-  '') (writeShellScriptBin "hm-history" ''
+  '')
+  (writeShellScriptBin "hm-history" ''
     nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
-  '') (writeShellScriptBin "hm-news" ''
-    home-manager news --flake ~/dotfiles
-  '') (writeShellScriptBin "hm-switch" ''
-    home-manager switch --flake ~/dotfiles
+  '')
+  (writeShellScriptBin "hm-news" ''
+    home-manager news --flake ~/dotfiles#diana.${system}
+  '')
+  (writeShellScriptBin "hm-switch" ''
+    home-manager switch --flake ~/dotfiles#diana.${system}
   '')
 #+end_src
 
 ** programs
+
+#+NAME: programs
+#+begin_src nix
+  programs = {
+    <<home-manager>>
+
+    <<alacritty>>
+
+    <<bash>>
+
+    <<emacs>>
+
+    <<firefox>>
+
+    <<ghostty>>
+
+    <<git>>
+
+    <<lsd>>
+
+    <<starship>>
+
+    <<zsh>>
+  };
+#+end_src
 
 *** home manager
 
@@ -273,14 +325,14 @@ Let Home Manager install and manage itself.
 
 #+NAME: home-manager
 #+begin_src nix
-  programs.home-manager.enable = true;
+  home-manager.enable = true;
 #+end_src
 
 *** alacritty
 
 #+NAME: alacritty
 #+begin_src nix
-  programs.alacritty = {
+  alacritty = {
     enable = true;
     settings = {
       font = {
@@ -311,22 +363,45 @@ Let Home Manager install and manage itself.
 
 #+NAME: bash
 #+begin_src nix
-  programs.bash.enable = true;
+  bash.enable = isLinux;
 #+end_src
 
 *** emacs
 
 #+NAME: emacs
 #+begin_src nix
-  programs.emacs.enable = true;
+  emacs.enable = true;
+#+end_src
+
+*** firefox
+
+Only enable firefox for macOS for now to not affect the current installation of
+firefox on my Ubuntu laptop.
+
+#+NAME: firefox
+#+begin_src nix
+  firefox = {
+    enable = isDarwin;
+    profiles.diana = {
+      settings = {
+        "browser.newtabpage.activity-stream.feeds.system.topstories" = false;
+        "browser.newtabpage.activity-stream.feeds.topsites" = false;
+        "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+        "browser.shell.checkDefaultBrowser" = false;
+        "extensions.formautofill.addresses.enabled" = false;
+        "extensions.formautofill.creditCards.enabled" = false;
+        "signon.rememberSignons" = false;
+      };
+    };
+  };
 #+end_src
 
 *** ghostty
 
 #+NAME: ghostty
 #+begin_src nix
-  programs.ghostty = {
-    enable = true;
+  ghostty = {
+    enable = isLinux;
     settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
   };
 #+end_src
@@ -335,10 +410,11 @@ Let Home Manager install and manage itself.
 
 #+NAME: git
 #+begin_src nix
-  programs.git = {
+  git = {
     enable = true;
     package = pkgs.gitFull;
     settings = {
+      commit.gpgsign = true;
       fetch.prune = true;
       github.user = "diana-anna";
       pull = { rebase = false; };
@@ -349,11 +425,21 @@ Let Home Manager install and manage itself.
   };
 #+end_src
 
+*** lsd
+
+#+NAME: lsd
+#+begin_src nix
+  lsd = {
+    enable = true;
+    enableBashIntegration = isLinux;
+    enableZshIntegration = isDarwin;
+  };
+#+end_src
 *** starship
 
 #+NAME: starship
 #+begin_src nix
-  programs.starship = {
+  starship = {
     enable = true;
     settings = {
       aws.disabled = true;
@@ -666,6 +752,13 @@ Let Home Manager install and manage itself.
   };
 #+end_src
 
+*** zsh
+
+#+NAME: zsh
+#+begin_src nix
+  zsh.enable = isDarwin;
+#+end_src
+
 ** fonts
 
 Needed on Debian-based systems for fonts installed with nix to be usable.
@@ -714,21 +807,21 @@ up, but nothing happens when I click on it.
 
 #+NAME: dconf-settings
 #+begin_src nix
-  dconf.settings = {
+  dconf.settings = mkIf isLinux {
     "org/gnome/shell" = {
-        favorite-apps = [
-          "org.gnome.Terminal.desktop"
-          "org.gnome.Nautilus.desktop"
-          "Alacritty.desktop"
-          "htop.desktop"
-          "tresorit.desktop"
-          "emacs.desktop"
-          "firefox_firefox.desktop"
-          "chromium_chromium.desktop"
-          "org.telegram.desktop.desktop"
-          "signal.desktop"
-          "spotify_spotify.desktop"
-        ];
+      favorite-apps = [
+        "org.gnome.Terminal.desktop"
+        "org.gnome.Nautilus.desktop"
+        "Alacritty.desktop"
+        "htop.desktop"
+        "tresorit.desktop"
+        "emacs.desktop"
+        "firefox_firefox.desktop"
+        "chromium_chromium.desktop"
+        "org.telegram.desktop.desktop"
+        "signal.desktop"
+        "spotify_spotify.desktop"
+      ];
     };
     <<org-gnome-terminal>>
   };
@@ -751,7 +844,9 @@ icons appear for starship prompt.
 
 ** XDG
 
+Not sure why I added this in the first place lol.
+
 #+NAME: xdg
 #+begin_src nix
-  xdg.enable = true;
+  xdg.enable = false;
 #+end_src

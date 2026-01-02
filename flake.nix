@@ -11,16 +11,20 @@
 
   outputs = inputs@{ self, nixpkgs, home-manager }:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      homeConfigurations."diana" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+      systems = [ "aarch64-darwin" "x86_64-linux" ];
+      mkHome = system:
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.${system};
 
-        modules = [ ./home.nix ];
+          modules = [ ./home.nix ];
 
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
-      };
-    };
+          # Optionally use extraSpecialArgs
+          # to pass through arguments to home.nix
+          extraSpecialArgs = { inherit system; };
+        };
+      mkHomeConfig = system:
+        nixpkgs.lib.nameValuePair ("diana.${system}") (mkHome system);
+      forAllSystems = f: nixpkgs.lib.genAttrs' systems f;
+
+    in { homeConfigurations = forAllSystems mkHomeConfig; };
 }
