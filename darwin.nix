@@ -40,6 +40,7 @@
           { app = "/Users/diana/.nix-profile/Applications/Emacs.app"; }
           { app = "/Users/diana/.nix-profile/Applications/Firefox.app"; }
         ];
+        show-recents = false;
       };
     };
 

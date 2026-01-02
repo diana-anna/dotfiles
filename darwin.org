@@ -6,7 +6,7 @@
 :END:
 
 #+begin_src nix :tangle darwin.nix
-  {pkgs, inputs, ...}:
+  { pkgs, inputs, ...}:
 
   {
     <<environment>>
@@ -103,21 +103,20 @@ Add ability to use TouchID for sudo.
 
 #+NAME: system
 #+begin_src nix
-  system =
-    let
-      scriptPkgs = [ pkgs.defaultbrowser ];
-      scriptPath = pkgs.lib.makeBinPath scriptPkgs;
-    in {
-      <<activation-scripts>>
+  system = let
+    scriptPkgs = [ pkgs.defaultbrowser ];
+    scriptPath = pkgs.lib.makeBinPath scriptPkgs;
+  in {
+    <<activation-scripts>>
 
-      <<configuration-revision>>
+    <<configuration-revision>>
 
-      <<defaults>>
+    <<defaults>>
 
-      <<primary-user>>
+    <<primary-user>>
 
-      <<state-version>>
-    };
+    <<state-version>>
+  };
 #+end_src
 
 *** Activation Scripts
@@ -158,6 +157,7 @@ Set Git commit hash for darwin-version.
         { app = "/Users/diana/.nix-profile/Applications/Emacs.app"; }
         { app = "/Users/diana/.nix-profile/Applications/Firefox.app"; }
       ];
+      show-recents = false;
     };
   };
 #+end_src
