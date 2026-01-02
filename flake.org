@@ -15,9 +15,13 @@
         url = "github:nix-community/home-manager";
         inputs.nixpkgs.follows = "nixpkgs";
       };
+      nix-darwin = {
+        url = "github:nix-darwin/nix-darwin/master";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
     };
 
-    outputs = inputs@{ self, nixpkgs, home-manager }:
+    outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin }:
       let
         systems = [ "aarch64-darwin" "x86_64-linux" ];
         mkHome = system:
@@ -34,8 +38,22 @@
           nixpkgs.lib.nameValuePair ("diana.${system}") (mkHome system);
         forAllSystems = f: nixpkgs.lib.genAttrs' systems f;
 
-      in { homeConfigurations = forAllSystems mkHomeConfig; };
+      in {
+        darwinConfigurations."diana-macbook" = nix-darwin.lib.darwinSystem {
+          modules = [ ./darwin.nix ];
+          specialArgs = { inherit inputs; };
+        };
+        homeConfigurations = forAllSystems mkHomeConfig;
+      };
   }
+#+end_src
+
+** running flake for the first time
+
+*** darwin
+
+#+begin_src sh
+  sudo nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin/master#darwin-rebuild -- switch --flake .#diana-macbook
 #+end_src
 
 ** system-specific home manager configurations

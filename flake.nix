@@ -7,9 +7,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager }:
+  outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin }:
     let
       systems = [ "aarch64-darwin" "x86_64-linux" ];
       mkHome = system:
@@ -26,5 +30,11 @@
         nixpkgs.lib.nameValuePair ("diana.${system}") (mkHome system);
       forAllSystems = f: nixpkgs.lib.genAttrs' systems f;
 
-    in { homeConfigurations = forAllSystems mkHomeConfig; };
+    in {
+      darwinConfigurations."diana-macbook" = nix-darwin.lib.darwinSystem {
+        modules = [ ./darwin.nix ];
+        specialArgs = { inherit inputs; };
+      };
+      homeConfigurations = forAllSystems mkHomeConfig;
+    };
 }

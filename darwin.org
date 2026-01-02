@@ -1,0 +1,211 @@
+#+TITLE: darwin.org
+
+* root
+:PROPERTIES:
+:header-args: :noweb yes
+:END:
+
+#+begin_src nix :tangle darwin.nix
+  {pkgs, inputs, ...}:
+
+  {
+    <<environment>>
+
+    <<homebrew>>
+
+    <<nix>>
+
+    <<nixpkgs>>
+
+    <<security>>
+
+    <<system>>
+  }
+#+end_src
+
+** Environment
+
+Comment from initial flake:
+#+begin_quote
+List packages installed in system profile. To search by name, run:
+$ nix-env -qaP | grep wget
+#+end_quote
+
+#+NAME: environment
+#+begin_src nix
+  environment.systemPackages = with pkgs; [ defaultbrowser ];
+#+end_src
+
+** Homebrew
+
+Use homebrew for packages that are not available (or not available for darwin)
+in nixpkgs.
+
+#+NAME: homebrew
+#+begin_src nix
+  homebrew = {
+    enable = true;
+    casks = [ "ghostty" "spotify" ];
+    onActivation = {
+      autoUpdate = true;
+      upgrade = true;
+    };
+  };
+#+end_src
+
+** nix
+
+Part of initial flake
+
+#+begin_quote
+Necessary for using flakes on this system.
+#+end_quote
+
+#+NAME: nix
+#+begin_src nix
+  nix.settings.experimental-features = "nix-command flakes";
+#+end_src
+
+** nixpkgs
+
+Part of initial flake
+
+#+begin_quote
+The platform the configuration will be used on.
+#+end_quote
+
+#+NAME: nixpkgs
+#+begin_src nix
+  nixpkgs.hostPlatform = "aarch64-darwin";
+#+end_src
+
+** Programs
+
+Comment from initial flake:
+
+#+begin_quote
+Enable alternative shell support in nix-darwin.
+programs.fish.enable = true;
+#+end_quote
+
+I have not enabled this in my config.
+
+** Security
+
+Add ability to use TouchID for sudo.
+
+#+NAME: security
+#+begin_src nix
+  security.pam.services.sudo_local.touchIdAuth = true;
+#+end_src
+
+** System
+
+#+NAME: system
+#+begin_src nix
+  system =
+    let
+      scriptPkgs = [ pkgs.defaultbrowser ];
+      scriptPath = pkgs.lib.makeBinPath scriptPkgs;
+    in {
+      <<activation-scripts>>
+
+      <<configuration-revision>>
+
+      <<defaults>>
+
+      <<primary-user>>
+
+      <<state-version>>
+    };
+#+end_src
+
+*** Activation Scripts
+
+#+NAME: activation-scripts
+#+begin_src nix
+  activationScripts.postActivation.text = ''
+    export PATH="${scriptPath}:$PATH"
+    defaultbrowser firefox
+  '';
+#+end_src
+
+*** Configuration Revision
+
+Part of initial flake.
+
+#+begin_quote
+Set Git commit hash for darwin-version.
+#+end_quote
+
+#+NAME: configuration-revision
+#+begin_src nix
+  configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
+#+end_src
+
+*** Defaults
+
+#+NAME: defaults
+#+begin_src nix
+  defaults = {
+    dock = {
+      appswitcher-all-displays = true;
+      autohide = true;
+      orientation = "bottom";
+      persistent-apps = [
+        { app = "/System/Applications/Apps.app"; }
+        { app = "/Applications/Ghostty.app"; }
+        { app = "/Users/diana/.nix-profile/Applications/Emacs.app"; }
+        { app = "/Users/diana/.nix-profile/Applications/Firefox.app"; }
+      ];
+    };
+  };
+#+end_src
+
+*** Primary User
+
+This sections fixes the following error:
+
+#+begin_quote
+  error:
+  Failed assertions:
+  - Previously, some nix-darwin options applied to the user running
+  `darwin-rebuild`. As part of a long‐term migration to make
+  nix-darwin focus on system‐wide activation and support first‐class
+  multi‐user setups, all system activation now runs as `root`, and
+  these options instead apply to the `system.primaryUser` user.
+
+  You currently have the following primary‐user‐requiring options set:
+
+  * `homebrew.enable`
+  * `system.defaults.dock.appswitcher-all-displays`
+  * `system.defaults.dock.autohide`
+  * `system.defaults.dock.orientation`
+  * `system.defaults.dock.persistent-apps`
+
+  To continue using these options, set `system.primaryUser` to the name
+  of the user you have been using to run `darwin-rebuild`.
+
+  If you run into any unexpected issues with the migration, please
+  open an issue at <https://github.com/nix-darwin/nix-darwin/issues/new>
+  and include as much information as possible.
+#+end_quote
+
+#+NAME: primary-user
+#+begin_src nix
+  primaryUser = "diana";
+#+end_src
+
+*** State Versions
+
+Part of initial flake.
+
+#+begin_quote
+Used for backwards compatibility, please read the changelog before changing.
+$ darwin-rebuild changelog
+#+end_quote
+
+#+NAME: state-version
+#+begin_src nix
+  stateVersion = 6;
+#+end_src

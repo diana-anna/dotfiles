@@ -35,8 +35,15 @@ let
     (writeShellScriptBin "full-switch" ''
       cd ~/dotfiles
       nix flake update
-      home-manager switch --flake .
+      ${if isDarwin then
+        "sudo darwin-rebuild switch --flake .#diana-macbook"
+      else
+        ""}
+      home-manager switch --flake .#diana.${system}
       cd -
+    '')
+    (writeShellScriptBin "dr-switch" ''
+      sudo darwin-rebuild switch --flake ~/dotfiles#diana-macbook
     '')
     (writeShellScriptBin "hm-history" ''
       nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
