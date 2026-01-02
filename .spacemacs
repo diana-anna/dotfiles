@@ -94,9 +94,9 @@ This function should only modify configuration layer settings."
      semantic
      (shell :variables
             shell-default-height 30
-            shell-default-position 'bottom)
-     ;;shell-default-shell 'vterm
-     ;;shell-default-term-shell "/bin/bash")
+            shell-default-position 'bottom
+            shell-default-term (if (equal system-type 'gnu/linux) 'vterm 'ansi-term)
+            shell-default-term-shell (if (equal system-type 'gnu/linux) "/bin/bash" "/bin/zsh"))
      spell-checking
      syntax-checking
      version-control
@@ -287,6 +287,9 @@ It should only modify the values of Spacemacs settings."
                                :weight normal
                                :width normal)
 
+   ;; Default icons font, it can be `all-the-icons' or `nerd-icons'.
+   dotspacemacs-default-icons-font 'nerd-icons
+
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
 
@@ -373,6 +376,14 @@ It should only modify the values of Spacemacs settings."
    ;; displays the buffer in a same-purpose window even if the buffer can be
    ;; displayed in the current window. (default nil)
    dotspacemacs-switch-to-buffer-prefers-purpose nil
+
+   ;; Make consecutive tab key presses after commands such as
+   ;; `spacemacs/alternate-buffer' (SPC TAB) cycle through previous
+   ;; buffers/windows/etc. Please see the option's docstring for more information.
+   ;; Set the option to t in order to enable cycling for all current and
+   ;; future cycling commands. Alternatively, choose a subset of the currently
+   ;; supported commands: '(alternate-buffer alternate-window). (default nil)
+   dotspacemacs-enable-cycling nil
 
    ;; Whether side windows (such as those created by treemacs or neotree)
    ;; are kept or minimized by `spacemacs/toggle-maximize-window' (SPC w m).
@@ -512,11 +523,10 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-search-tools '("rg" "ag" "ack" "grep")
 
    ;; The backend used for undo/redo functionality. Possible values are
-   ;; `undo-fu', `undo-redo' and `undo-tree' see also `evil-undo-system'.
+   ;; `undo-redo', `undo-fu' and `undo-tree' see also `evil-undo-system'.
    ;; Note that saved undo history does not get transferred when changing
-   ;; your undo system. The default is currently `undo-fu' as `undo-tree'
-   ;; is not maintained anymore and `undo-redo' is very basic."
-   dotspacemacs-undo-system 'undo-fu
+   ;; your undo system from or to undo-tree. (default `undo-redo')
+   dotspacemacs-undo-system 'undo-redo
 
    ;; Format specification for setting the frame title.
    ;; %a - the `abbreviated-file-name', or `buffer-name'
