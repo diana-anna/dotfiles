@@ -6,7 +6,7 @@
 :END:
 
 #+begin_src nix :tangle home.nix
-  { config, lib, pkgs, ... }:
+  { config, ghostty, lib, pkgs, ... }:
 
   {
     <<user-info>>
@@ -327,6 +327,7 @@ Let Home Manager install and manage itself.
 #+begin_src nix
   programs.ghostty = {
     enable = true;
+    package = ghostty.packages."${pkgs.system}".default;
     settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
   };
 #+end_src

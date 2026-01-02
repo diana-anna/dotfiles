@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, ghostty, lib, pkgs, ... }:
 
 {
   home.username = "diana";
@@ -29,20 +29,17 @@
     tmux
     tree
     vim
-
+  
     (writeShellScriptBin "full-switch" ''
       cd ~/dotfiles
       nix flake update
       home-manager switch --flake .
       cd -
-    '')
-    (writeShellScriptBin "hm-history" ''
+    '') (writeShellScriptBin "hm-history" ''
       nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
-    '')
-    (writeShellScriptBin "hm-news" ''
+    '') (writeShellScriptBin "hm-news" ''
       home-manager news --flake ~/dotfiles
-    '')
-    (writeShellScriptBin "hm-switch" ''
+    '') (writeShellScriptBin "hm-switch" ''
       home-manager switch --flake ~/dotfiles
     '')
   ];
@@ -81,6 +78,7 @@
 
   programs.ghostty = {
     enable = true;
+    package = ghostty.packages."${pkgs.system}".default;
     settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
   };
 
@@ -101,9 +99,9 @@
     enable = true;
     settings = {
       aws.disabled = true;
-
+  
       "$schema" = "https://starship.rs/config-schema.json";
-
+  
       format = lib.strings.replaceStrings [ "\n" ] [ "" ] ''
         [](red)
         $os
@@ -133,7 +131,7 @@
         $line_break
         $character
       '';
-
+  
       character = {
         disabled = false;
         success_symbol = "[❯](bold fg:green)";
@@ -143,7 +141,7 @@
         vimcmd_replace_symbol = "[❮](bold fg:lavender)";
         vimcmd_visual_symbol = "[❮](bold fg:yellow)";
       };
-
+  
       cmd_duration = {
         show_milliseconds = false;
         format = "  in $duration ";
@@ -152,7 +150,7 @@
         show_notifications = true;
         min_time_to_notify = 45000;
       };
-
+  
       directory = {
         format = "[ $path ]($style)";
         style = "bg:peach fg:crust";
@@ -167,20 +165,20 @@
           "Developer" = "󰲋 ";
         };
       };
-
+  
       git_branch = {
         symbol = "";
         style = "bg:yellow";
         format = "[[ $symbol $branch ](fg:crust bg:yellow)]($style)";
       };
-
+  
       git_status = {
         style = "bg:yellow";
         format = "[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)";
       };
-
+  
       line_break.disabled = true;
-
+  
       nix_shell = {
         disabled = false;
         format =
@@ -191,7 +189,7 @@
         pure_msg = "pure";
         unknown_msg = "";
       };
-
+  
       os = {
         disabled = false;
         style = "bg:red fg:crust";
@@ -217,21 +215,21 @@
           Windows = "";
         };
       };
-
+  
       time = {
         disabled = false;
         time_format = "%R";
         style = "bg:lavender";
         format = "[[  $time ](fg:crust bg:lavender)]($style)";
       };
-
+  
       username = {
         show_always = true;
         style_user = "bg:red fg:crust";
         style_root = "bg:red fg:crust";
         format = "[ $user]($style)";
       };
-
+  
       c = {
         symbol = " ";
         style = "bg:green";
@@ -289,9 +287,9 @@
         style = "bg:green";
         format = "[[ $symbol( $version) ](fg:crust bg:green)]($style)";
       };
-
+  
       palette = "catppuccin_mocha";
-
+  
       palettes = {
         catppuccin_frappe = {
           rosewater = "#f2d5cf";
@@ -418,26 +416,25 @@
 
   dconf.settings = {
     "org/gnome/shell" = {
-      favorite-apps = [
-        "org.gnome.Terminal.desktop"
-        "org.gnome.Nautilus.desktop"
-        "Alacritty.desktop"
-        "htop.desktop"
-        "tresorit.desktop"
-        "emacs.desktop"
-        "firefox_firefox.desktop"
-        "chromium_chromium.desktop"
-        "org.telegram.desktop.desktop"
-        "signal.desktop"
-        "spotify_spotify.desktop"
-      ];
+        favorite-apps = [
+          "org.gnome.Terminal.desktop"
+          "org.gnome.Nautilus.desktop"
+          "Alacritty.desktop"
+          "htop.desktop"
+          "tresorit.desktop"
+          "emacs.desktop"
+          "firefox_firefox.desktop"
+          "chromium_chromium.desktop"
+          "org.telegram.desktop.desktop"
+          "signal.desktop"
+          "spotify_spotify.desktop"
+        ];
     };
-    "org/gnome/terminal/legacy/profiles:/:1d4804e8-44e6-4c2b-a37c-95789cad0e61" =
-      {
-        font = "UbuntuMono Nerd Font Mono 12";
-        use-system-font = false;
-        visible-name = "diana";
-      };
+    "org/gnome/terminal/legacy/profiles:/:1d4804e8-44e6-4c2b-a37c-95789cad0e61" = {
+      font = "UbuntuMono Nerd Font Mono 12";
+      use-system-font = false;
+      visible-name = "diana";
+    };
   };
 
   xdg.enable = true;
