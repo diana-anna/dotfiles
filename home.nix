@@ -116,6 +116,7 @@ in {
       enable = true;
       package = pkgs.gitFull;
       settings = {
+        commit.gpgsign = true;
         fetch.prune = true;
         github.user = "diana-anna";
         pull = { rebase = false; };
