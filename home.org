@@ -6,7 +6,7 @@
 :END:
 
 #+begin_src nix :tangle home.nix
-  { config, lib, pkgs, ... }:
+  { config, lib, pkgs, system, ... }:
 
   let
     inherit (lib) mkIf;
@@ -250,43 +250,16 @@ leaving this here as an example of overrides.
 #+begin_src nix
   linux-packages = with pkgs; [
     signal-desktop
-
-    <<linux-writeShellScriptBin>>
   ];
-#+end_src
-
-**** Linux shell scripts
-
-#+NAME: linux-writeShellScriptBin
-#+begin_src nix
-  (writeShellScriptBin "hm-news" ''
-    home-manager news --flake ~/dotfiles#diana.x86_64-linux
-  '')
-  (writeShellScriptBin "hm-switch" ''
-    home-manager switch --flake ~/dotfiles#diana.x86_64-linux
-  '')
 #+end_src
 
 *** macOS packages
 
 #+NAME: darwin-packages
 #+begin_src nix
-  darwin-packages = with pkgs; [
-    <<darwin-writeShellScriptBin>>
-  ];
+  darwin-packages = with pkgs; [];
 #+end_src
 
-**** macOS shell scripts
-
-#+NAME: darwin-writeShellScriptBin
-#+begin_src nix
-  (writeShellScriptBin "hm-news" ''
-    home-manager news --flake ~/dotfiles#diana.aarch64-darwin
-  '')
-  (writeShellScriptBin "hm-switch" ''
-    home-manager switch --flake ~/dotfiles#diana.aarch64-darwin
-  '')
-#+end_src
 *** simple shell scripts
 
 #+begin_quote
@@ -308,6 +281,12 @@ environment:
   '')
   (writeShellScriptBin "hm-history" ''
     nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
+  '')
+  (writeShellScriptBin "hm-news" ''
+    home-manager news --flake ~/dotfiles#diana.${system}
+  '')
+  (writeShellScriptBin "hm-switch" ''
+    home-manager switch --flake ~/dotfiles#diana.${system}
   '')
 #+end_src
 

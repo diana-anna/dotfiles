@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, system, ... }:
 
 let
   inherit (lib) mkIf;
@@ -41,25 +41,15 @@ let
     (writeShellScriptBin "hm-history" ''
       nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
     '')
-  ];
-  linux-packages = with pkgs; [
-    signal-desktop
-
     (writeShellScriptBin "hm-news" ''
-      home-manager news --flake ~/dotfiles#diana.x86_64-linux
+      home-manager news --flake ~/dotfiles#diana.${system}
     '')
     (writeShellScriptBin "hm-switch" ''
-      home-manager switch --flake ~/dotfiles#diana.x86_64-linux
+      home-manager switch --flake ~/dotfiles#diana.${system}
     '')
   ];
-  darwin-packages = with pkgs; [
-    (writeShellScriptBin "hm-news" ''
-      home-manager news --flake ~/dotfiles#diana.aarch64-darwin
-    '')
-    (writeShellScriptBin "hm-switch" ''
-      home-manager switch --flake ~/dotfiles#diana.aarch64-darwin
-    '')
-  ];
+  linux-packages = with pkgs; [ signal-desktop ];
+  darwin-packages = with pkgs; [ ];
 in {
   home.username = "diana";
   home.homeDirectory = homeDirectory;

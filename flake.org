@@ -28,6 +28,7 @@
 
             # Optionally use extraSpecialArgs
             # to pass through arguments to home.nix
+            extraSpecialArgs = { inherit system; };
           };
         mkHomeConfig = system:
           nixpkgs.lib.nameValuePair ("diana.${system}") (mkHome system);
