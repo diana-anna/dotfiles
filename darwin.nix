@@ -5,6 +5,7 @@
 
   homebrew = {
     enable = true;
+    brews = [ "libvterm" ];
     casks = [ "ghostty" "spotify" ];
     onActivation = {
       autoUpdate = true;

@@ -55,7 +55,7 @@ let
       home-manager switch --flake ~/dotfiles#diana.${system}
     '')
   ];
-  linux-packages = with pkgs; [ signal-desktop ];
+  linux-packages = with pkgs; [ libvterm signal-desktop ];
   darwin-packages = with pkgs; [ ];
 in {
   home.username = "diana";
@@ -97,6 +97,11 @@ in {
 
     bash.enable = isLinux;
 
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+
     emacs.enable = true;
 
     firefox = {
@@ -115,7 +120,8 @@ in {
     };
 
     ghostty = {
-      enable = isLinux;
+      enable = isDarwin;
+      package = null;
       settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
     };
 
@@ -131,6 +137,11 @@ in {
         user.email = "17442895+diana-anna@users.noreply.github.com";
         user.name = "diana-anna";
       };
+    };
+
+    nix-your-shell = {
+      enable = true;
+      enableZshIntegration = true;
     };
 
     lsd = {

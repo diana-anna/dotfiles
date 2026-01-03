@@ -228,6 +228,19 @@ Linking a few articles that seem to be useful:
   nil
 #+end_src
 
+**** shell layer in emacs
+
+In order to set the default terminal emulator in emacs to vterm, the following
+packages need to be on the system. The ~libvterm~ package also needs to be
+installed, but it is installed as part of Linux packages for Linux systems, and
+using homebrew for macOS.
+
+#+NAME: shell-emacs-packages
+#+begin_src nix
+  cmake
+  libtool
+#+end_src
+
 **** overrides
 
 #+begin_quote
@@ -249,6 +262,7 @@ leaving this here as an example of overrides.
 #+NAME: linux-packages
 #+begin_src nix
   linux-packages = with pkgs; [
+    libvterm
     signal-desktop
   ];
 #+end_src
@@ -308,6 +322,8 @@ environment:
 
     <<bash>>
 
+    <<direnv>>
+
     <<emacs>>
 
     <<firefox>>
@@ -315,6 +331,8 @@ environment:
     <<ghostty>>
 
     <<git>>
+
+    <<nix-your-shell>>
 
     <<lsd>>
 
@@ -373,6 +391,16 @@ Let Home Manager install and manage itself.
   bash.enable = isLinux;
 #+end_src
 
+*** direnv
+
+#+NAME: direnv
+#+begin_src nix
+  direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+#+end_src
+
 *** emacs
 
 #+NAME: emacs
@@ -408,7 +436,8 @@ firefox on my Ubuntu laptop.
 #+NAME: ghostty
 #+begin_src nix
   ghostty = {
-    enable = isLinux;
+    enable = isDarwin;
+    package = null;
     settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
   };
 #+end_src
@@ -440,6 +469,17 @@ firefox on my Ubuntu laptop.
     enable = true;
     enableBashIntegration = isLinux;
     enableZshIntegration = isDarwin;
+  };
+#+end_src
+*** nix-your-shell
+
+There is no ~enableBashIntegration~ setting.
+
+#+NAME: nix-your-shell
+#+begin_src nix
+  nix-your-shell = {
+    enable = true;
+    enableZshIntegration = true;
   };
 #+end_src
 *** starship

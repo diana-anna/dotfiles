@@ -45,6 +45,7 @@ in nixpkgs.
 #+begin_src nix
   homebrew = {
     enable = true;
+    brews = [ "libvterm" ];
     casks = [ "ghostty" "spotify" ];
     onActivation = {
       autoUpdate = true;
