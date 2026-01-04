@@ -7,9 +7,13 @@ let
   homeDirectory = if isDarwin then "/Users/diana" else "/home/diana";
   common-packages = with pkgs; [
     bat
+    bitwarden-desktop
     btop
     mu
     emacs.pkgs.mu4e
+    nerd-fonts.daddy-time-mono
+    nerd-fonts.departure-mono
+    nerd-fonts._0xproto
     nerd-fonts.ubuntu-mono
     graphviz # for org-roam-ui
     gnupg
@@ -132,6 +136,7 @@ in {
         commit.gpgsign = true;
         fetch.prune = true;
         github.user = "diana-anna";
+        init.defaultBranch = "main";
         pull = { rebase = false; };
         push = { autoSetupRemote = true; };
         user.email = "17442895+diana-anna@users.noreply.github.com";

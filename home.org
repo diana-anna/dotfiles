@@ -166,6 +166,7 @@ environment.
 #+begin_src nix
   common-packages = with pkgs; [
     bat
+    bitwarden-desktop
     btop
     <<email-packages>>
     <<fonts-packages>>
@@ -215,6 +216,9 @@ Linking a few articles that seem to be useful:
 
 #+NAME: fonts-packages
 #+begin_src nix
+  nerd-fonts.daddy-time-mono
+  nerd-fonts.departure-mono
+  nerd-fonts._0xproto
   nerd-fonts.ubuntu-mono
 #+end_src
 
@@ -453,6 +457,7 @@ firefox on my Ubuntu laptop.
       commit.gpgsign = true;
       fetch.prune = true;
       github.user = "diana-anna";
+      init.defaultBranch = "main";
       pull = { rebase = false; };
       push = { autoSetupRemote = true; };
       user.email = "17442895+diana-anna@users.noreply.github.com";
