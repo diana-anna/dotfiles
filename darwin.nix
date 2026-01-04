@@ -40,8 +40,14 @@
           { app = "/Applications/Ghostty.app"; }
           { app = "/Users/diana/.nix-profile/Applications/Emacs.app"; }
           { app = "/Users/diana/.nix-profile/Applications/Firefox.app"; }
+          { app = "/Users/diana/.nix-profile/Applications/Telegram.app"; }
+          { app = "/Applications/Spotify.app"; }
         ];
         show-recents = false;
+      };
+      finder = {
+        _FXSortFoldersFirst = true;
+        ShowStatusBar = true;
       };
     };
 
