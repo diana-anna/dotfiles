@@ -47,6 +47,7 @@
       };
       finder = {
         _FXSortFoldersFirst = true;
+        NewWindowTarget = "Home";
         ShowStatusBar = true;
       };
     };

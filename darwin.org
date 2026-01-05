@@ -164,6 +164,7 @@ Set Git commit hash for darwin-version.
     };
     finder = {
       _FXSortFoldersFirst = true;
+      NewWindowTarget = "Home";
       ShowStatusBar = true;
     };
   };
