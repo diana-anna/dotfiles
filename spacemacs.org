@@ -338,7 +338,7 @@ The stuff after ~:variables~ is an a-list.
      ;; a non-negative integer (pixel size), or a floating-point (point size).
      ;; Point size is recommended, because it's device independent. (default 10.0)
      dotspacemacs-default-font '("UbuntuMono Nerd Font"
-                                 :size 12.0
+                                 :size 16.0
                                  :weight normal
                                  :width normal)
 
