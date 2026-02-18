@@ -589,6 +589,8 @@ in {
     settings.experimental-features = [ "nix-command" "flakes" ];
   };
 
+  services = { protonmail-bridge.enable = isLinux; };
+
   dconf.settings = mkIf isLinux {
     "org/gnome/shell" = {
       favorite-apps = [

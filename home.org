@@ -29,6 +29,8 @@
 
     <<nix>>
 
+    <<services>>
+
     <<dconf-settings>>
 
     <<xdg>>
@@ -931,6 +933,15 @@ Needed on Debian-based systems for fonts installed with nix to be usable.
   nix = {
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
+  };
+#+end_src
+
+** Services
+
+#+NAME: services
+#+begin_src nix
+  services = {
+    protonmail-bridge.enable = isLinux;
   };
 #+end_src
 
