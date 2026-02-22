@@ -65,7 +65,7 @@ This function should only modify configuration layer settings."
      lsp
      (markdown :variables
                markdown-live-preview-engine 'vmd)
-     mu4e
+     ;; mu4e
      multiple-cursors
      (nixos :variables
             nix-backend 'lsp)
@@ -638,8 +638,8 @@ Put your configuration code here, except for variables that should be set
 before packages are loaded."
   ;; Set the files that are searched for writing tokens
   ;; by default ~/.authinfo will be used
-  (setq auth-sources '("~/.authinfo.gpg")
-        (setq terminal-here-mac-terminal-command 'ghostty))
+  (setq auth-sources '("~/.authinfo.gpg"))
+  (setq terminal-here-mac-terminal-command 'ghostty)
 
   (add-hook `org-mode-hook #'custom-org-hook)
 
