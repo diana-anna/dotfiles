@@ -222,6 +222,13 @@ in {
     firefox = {
       enable = isDarwin;
       profiles.diana = {
+        extensions = {
+          force = true;
+          packages = with pkgs.nur.repos.rycee.firefox-addons; [
+            bitwarden
+            ublock-origin
+          ];
+        };
         settings = {
           "browser.newtabpage.activity-stream.feeds.system.topstories" = false;
           "browser.newtabpage.activity-stream.feeds.topsites" = false;
