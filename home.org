@@ -29,6 +29,8 @@
 
     <<nix>>
 
+    <<nixpkgs>>
+
     <<services>>
 
     <<dconf-settings>>
@@ -170,6 +172,7 @@ environment.
     bat
     bitwarden-desktop
     btop
+    discord
     <<email-packages>>
     <<fonts-packages>>
     graphviz # for org-roam-ui
@@ -937,6 +940,17 @@ Needed on Debian-based systems for fonts installed with nix to be usable.
   nix = {
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
+  };
+#+end_src
+
+** nixpkgs
+
+#+NAME: nixpkgs
+#+begin_src nix
+  nixpkgs = {
+    config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+      "discord"
+    ];
   };
 #+end_src
 

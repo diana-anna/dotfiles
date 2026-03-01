@@ -9,6 +9,7 @@ let
     bat
     bitwarden-desktop
     btop
+    discord
     mu
     emacs.pkgs.mu4e
     nerd-fonts.daddy-time-mono
@@ -594,6 +595,11 @@ in {
   nix = {
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
+  };
+
+  nixpkgs = {
+    config.allowUnfreePredicate = pkg:
+      builtins.elem (lib.getName pkg) [ "discord" ];
   };
 
   services = { protonmail-bridge.enable = isLinux; };

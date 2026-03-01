@@ -41,6 +41,7 @@
           { app = "/Users/diana/.nix-profile/Applications/Emacs.app"; }
           { app = "/Users/diana/.nix-profile/Applications/Firefox.app"; }
           { app = "/Users/diana/.nix-profile/Applications/Telegram.app"; }
+          { app = "/Users/diana/.nix-profile/Applications/Discord.app"; }
           { app = "/Applications/Spotify.app"; }
         ];
         show-recents = false;
