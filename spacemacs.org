@@ -59,15 +59,7 @@
 
      <<configuration-layers>>
 
-     ;; List of additional packages that will be installed without being wrapped
-     ;; in a layer (generally the packages are installed only and should still be
-     ;; loaded using load/require/use-package in the user-config section below in
-     ;; this file). If you need some configuration for these packages, then
-     ;; consider creating a layer. You can also put the configuration in
-     ;; `dotspacemacs/user-config'. To use a local version of a package, use the
-     ;; `:location' property: '(your-package :location "~/path/to/your-package/")
-     ;; Also include the dependencies as they will not be resolved automatically.
-     dotspacemacs-additional-packages '()
+     <<additional-packages>>
 
      ;; A list of packages that cannot be updated.
      dotspacemacs-frozen-packages '()
@@ -180,6 +172,22 @@ The stuff after ~:variables~ is an a-list.
          shell-default-position 'bottom
          shell-default-term 'vterm
          shell-default-term-shell (if (equal system-type 'gnu/linux) "/bin/bash" "/bin/zsh"))
+#+end_src
+
+*** additional packages
+
+#+NAME: additional-packages
+#+begin_src emacs-lisp
+  ;; List of additional packages that will be installed without being wrapped
+  ;; in a layer (generally the packages are installed only and should still be
+  ;; loaded using load/require/use-package in the user-config section below in
+  ;; this file). If you need some configuration for these packages, then
+  ;; consider creating a layer. You can also put the configuration in
+  ;; `dotspacemacs/user-config'. To use a local version of a package, use the
+  ;; `:location' property: '(your-package :location "~/path/to/your-package/")
+  ;; Also include the dependencies as they will not be resolved automatically.
+  dotspacemacs-additional-packages '(
+                                     (auto-dark))
 #+end_src
 
 ** init
@@ -716,7 +724,48 @@ The stuff after ~:variables~ is an a-list.
     (setq auth-sources '("~/.authinfo.gpg"))
     (setq terminal-here-mac-terminal-command 'ghostty)
 
+    <<user-config-auto-dark>>
+
     <<org-user-config>>)
+#+end_src
+
+*** auto-dark
+
+#+NAME: user-config-auto-dark
+#+begin_src emacs-lisp
+  (use-package auto-dark
+    :init (auto-dark-mode)
+    :defer t
+    :custom
+    (auto-dark-allow-osascript t)
+    <<auto-dark-spacemacs>>)
+#+end_src
+
+**** catppuccin
+
+#+NAME: auto-dark-catppuccin
+#+begin_src emacs-lisp
+  :hook
+  (auto-dark-dark-mode
+   . (lambda ()
+       (setq catppuccin-flavor 'frappe)
+       (catppuccin-reload)))
+  (auto-dark-light-mode
+   . (lambda ()
+       (setq catppuccin-flavor 'latte)
+       (catppuccin-reload)))
+  :config
+  (ignore-errors
+    (setq auto-dark-themes '((catppuccin) (catppuccin))))
+#+end_src
+
+**** spacemacs
+
+#+NAME: auto-dark-spacemacs
+#+begin_src emacs-lisp
+  :config
+  (ignore-errors
+    (setq auto-dark-themes '((spacemacs-dark) (spacemacs-light))))
 #+end_src
 
 *** org-mode
