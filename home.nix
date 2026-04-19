@@ -24,7 +24,6 @@ let
     hunspellDicts.pl_PL
     imagemagick
     ispell
-    lsd
     haskellPackages.nixfmt
     nil
     ncdu

@@ -183,7 +183,6 @@ environment.
     hunspellDicts.pl_PL
     imagemagick
     ispell
-    lsd
     <<nix-packages>>
     ncdu
     pandoc
