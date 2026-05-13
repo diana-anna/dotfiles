@@ -723,6 +723,7 @@ The stuff after ~:variables~ is an a-list.
     ;; by default ~/.authinfo will be used
     (setq auth-sources '("~/.authinfo.gpg"))
     (setq terminal-here-mac-terminal-command 'ghostty)
+    (setq mac-right-option-modifier 'none)
 
     <<user-config-auto-dark>>
 

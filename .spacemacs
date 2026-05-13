@@ -641,6 +641,7 @@ before packages are loaded."
   ;; by default ~/.authinfo will be used
   (setq auth-sources '("~/.authinfo.gpg"))
   (setq terminal-here-mac-terminal-command 'ghostty)
+  (setq mac-right-option-modifier 'none)
 
   (use-package auto-dark
     :init (auto-dark-mode)
