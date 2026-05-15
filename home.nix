@@ -105,7 +105,7 @@ in {
           alt-shift-n = "focus-monitor --wrap-around next";
           alt-shift-p = "focus-monitor --wrap-around prev";
 
-          alt-shift-semicolon = "mode service";
+          alt-shift-quote = "mode service";
           alt-t = "mode toggle";
           alt-shift-w = "mode numbered_workspace";
           alt-backslash = "mode resize_height";

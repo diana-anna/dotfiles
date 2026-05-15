@@ -6,7 +6,7 @@
   homebrew = {
     enable = true;
     brews = [ "libvterm" ];
-    casks = [ "ghostty" "spotify" ];
+    casks = [ "ghostty" "protonvpn" "spotify" ];
     onActivation = {
       autoUpdate = true;
       upgrade = true;
