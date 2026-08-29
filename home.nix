@@ -81,7 +81,7 @@ in {
 
     aerospace = {
       enable = isDarwin;
-      launchd.enable = false;
+      launchd.enable = true;
       settings = {
         on-focused-monitor-changed = [ "move-mouse monitor-lazy-center" ];
         workspace-to-monitor-force-assignment = {
