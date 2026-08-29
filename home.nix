@@ -1,9 +1,15 @@
-{ config, lib, pkgs, system, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  system,
+  ...
+}:
 
 let
   inherit (lib) mkIf;
   inherit (lib.lists) optionals;
-  inherit (pkgs.stdenv) isDarwin isLinux;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
   homeDirectory = if isDarwin then "/Users/diana" else "/home/diana";
   common-packages = with pkgs; [
     bat
@@ -24,7 +30,7 @@ let
     hunspellDicts.pl_PL
     imagemagick
     ispell
-    haskellPackages.nixfmt
+    nixfmt
     nil
     ncdu
     pandoc
@@ -35,7 +41,7 @@ let
     rust-analyzer
     rustc
     rustfmt
-    silver-searcher
+    silver-searcher-ng
     telegram-desktop
     texlab # LaTeX LSP
     tmux
@@ -45,10 +51,7 @@ let
     (writeShellScriptBin "full-switch" ''
       cd ~/dotfiles
       nix flake update
-      ${if isDarwin then
-        "sudo darwin-rebuild switch --flake .#diana-macbook"
-      else
-        ""}
+      ${if isDarwin then "sudo darwin-rebuild switch --flake .#diana-macbook" else ""}
       home-manager switch --flake .#diana.${system}
       cd -
     '')
@@ -65,16 +68,20 @@ let
       home-manager switch --flake ~/dotfiles#diana.${system}
     '')
   ];
-  linux-packages = with pkgs; [ libvterm signal-desktop ];
+  linux-packages = with pkgs; [
+    libvterm
+    signal-desktop
+  ];
   darwin-packages = with pkgs; [ ];
-in {
+in
+{
   home.username = "diana";
   home.homeDirectory = homeDirectory;
 
   home.stateVersion = "25.05"; # Please read the comment before changing.
 
-  home.packages = common-packages ++ optionals isLinux linux-packages
-    ++ optionals isDarwin darwin-packages;
+  home.packages =
+    common-packages ++ optionals isLinux linux-packages ++ optionals isDarwin darwin-packages;
 
   programs = {
     home-manager.enable = true;
@@ -84,6 +91,7 @@ in {
       launchd.enable = true;
       settings = {
         on-focused-monitor-changed = [ "move-mouse monitor-lazy-center" ];
+        default-root-container-layout = "accordion";
         workspace-to-monitor-force-assignment = {
           "1" = "built-in";
           "2" = "Dell";
@@ -118,13 +126,31 @@ in {
         };
 
         mode.service.binding = {
-          esc = [ "reload-config" "mode main" ];
-          r = [ "flatten-workspace-tree" "mode main" ];
+          esc = [
+            "reload-config"
+            "mode main"
+          ];
+          r = [
+            "flatten-workspace-tree"
+            "mode main"
+          ];
 
-          alt-shift-h = [ "join-with left" "mode main" ];
-          alt-shift-j = [ "join-with down" "mode main" ];
-          alt-shift-k = [ "join-with up" "mode main" ];
-          alt-shift-l = [ "join-with right" "mode main" ];
+          alt-shift-h = [
+            "join-with left"
+            "mode main"
+          ];
+          alt-shift-j = [
+            "join-with down"
+            "mode main"
+          ];
+          alt-shift-k = [
+            "join-with up"
+            "mode main"
+          ];
+          alt-shift-l = [
+            "join-with right"
+            "mode main"
+          ];
 
           alt-n = [
             "move-node-to-workspace --focus-follows-window --wrap-around next"
@@ -144,48 +170,127 @@ in {
             "mode main"
           ];
 
-          ctrl-alt-shift-n =
-            [ "move-workspace-to-monitor --wrap-around next" "mode main" ];
-          ctrl-alt-shift-p =
-            [ "move-workspace-to-monitor --wrap-around prev" "mode main" ];
+          ctrl-alt-shift-n = [
+            "move-workspace-to-monitor --wrap-around next"
+            "mode main"
+          ];
+          ctrl-alt-shift-p = [
+            "move-workspace-to-monitor --wrap-around prev"
+            "mode main"
+          ];
         };
 
         mode.numbered_workspace.binding = {
-          alt-1 = [ "workspace 1" "mode main" ];
-          alt-2 = [ "workspace 2" "mode main" ];
-          alt-3 = [ "workspace 3" "mode main" ];
-          alt-4 = [ "workspace 4" "mode main" ];
-          alt-5 = [ "workspace 5" "mode main" ];
-          alt-6 = [ "workspace 6" "mode main" ];
-          alt-7 = [ "workspace 7" "mode main" ];
-          alt-8 = [ "workspace 8" "mode main" ];
-          alt-9 = [ "workspace 9" "mode main" ];
+          alt-1 = [
+            "workspace 1"
+            "mode main"
+          ];
+          alt-2 = [
+            "workspace 2"
+            "mode main"
+          ];
+          alt-3 = [
+            "workspace 3"
+            "mode main"
+          ];
+          alt-4 = [
+            "workspace 4"
+            "mode main"
+          ];
+          alt-5 = [
+            "workspace 5"
+            "mode main"
+          ];
+          alt-6 = [
+            "workspace 6"
+            "mode main"
+          ];
+          alt-7 = [
+            "workspace 7"
+            "mode main"
+          ];
+          alt-8 = [
+            "workspace 8"
+            "mode main"
+          ];
+          alt-9 = [
+            "workspace 9"
+            "mode main"
+          ];
 
-          alt-shift-1 = [ "move-node-to-workspace 1" "mode main" ];
-          alt-shift-2 = [ "move-node-to-workspace 2" "mode main" ];
-          alt-shift-3 = [ "move-node-to-workspace 3" "mode main" ];
-          alt-shift-4 = [ "move-node-to-workspace 4" "mode main" ];
-          alt-shift-5 = [ "move-node-to-workspace 5" "mode main" ];
-          alt-shift-6 = [ "move-node-to-workspace 6" "mode main" ];
-          alt-shift-7 = [ "move-node-to-workspace 7" "mode main" ];
-          alt-shift-8 = [ "move-node-to-workspace 8" "mode main" ];
-          alt-shift-9 = [ "move-node-to-workspace 9" "mode main" ];
+          alt-shift-1 = [
+            "move-node-to-workspace 1"
+            "mode main"
+          ];
+          alt-shift-2 = [
+            "move-node-to-workspace 2"
+            "mode main"
+          ];
+          alt-shift-3 = [
+            "move-node-to-workspace 3"
+            "mode main"
+          ];
+          alt-shift-4 = [
+            "move-node-to-workspace 4"
+            "mode main"
+          ];
+          alt-shift-5 = [
+            "move-node-to-workspace 5"
+            "mode main"
+          ];
+          alt-shift-6 = [
+            "move-node-to-workspace 6"
+            "mode main"
+          ];
+          alt-shift-7 = [
+            "move-node-to-workspace 7"
+            "mode main"
+          ];
+          alt-shift-8 = [
+            "move-node-to-workspace 8"
+            "mode main"
+          ];
+          alt-shift-9 = [
+            "move-node-to-workspace 9"
+            "mode main"
+          ];
         };
 
         mode.toggle.binding = {
-          alt-a = [ "layout accordion tiles" "mode main" ];
-          alt-d = [ "layout horizontal vertical" "mode main" ];
-          alt-f = [ "layout floating tiling" "mode main" ];
+          alt-a = [
+            "layout accordion tiles"
+            "mode main"
+          ];
+          alt-d = [
+            "layout horizontal vertical"
+            "mode main"
+          ];
+          alt-f = [
+            "layout floating tiling"
+            "mode main"
+          ];
         };
 
         mode.resize_height.binding = {
-          alt-equal = [ "resize height +50" "mode main" ];
-          alt-minus = [ "resize height -50" "mode main" ];
+          alt-equal = [
+            "resize height +50"
+            "mode main"
+          ];
+          alt-minus = [
+            "resize height -50"
+            "mode main"
+          ];
         };
 
         mode.resize_width.binding = {
-          alt-equal = [ "resize width +50" "mode main" ];
-          alt-minus = [ "resize width -50" "mode main" ];
+          alt-equal = [
+            "resize width +50"
+            "mode main"
+          ];
+          alt-minus = [
+            "resize width -50"
+            "mode main"
+          ];
         };
       };
     };
@@ -250,7 +355,9 @@ in {
     ghostty = {
       enable = isDarwin;
       package = null;
-      settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
+      settings = {
+        theme = "light:Catppuccin Latte,dark:Catppuccin Frappe";
+      };
     };
 
     git = {
@@ -261,8 +368,12 @@ in {
         fetch.prune = true;
         github.user = "diana-anna";
         init.defaultBranch = "main";
-        pull = { rebase = false; };
-        push = { autoSetupRemote = true; };
+        pull = {
+          rebase = false;
+        };
+        push = {
+          autoSetupRemote = true;
+        };
         user.email = "17442895+diana-anna@users.noreply.github.com";
         user.name = "diana-anna";
       };
@@ -358,16 +469,14 @@ in {
 
         git_status = {
           style = "bg:yellow";
-          format =
-            "[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)";
+          format = "[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)";
         };
 
         line_break.disabled = true;
 
         nix_shell = {
           disabled = false;
-          format =
-            "[[ via $symbol $state \\($name\\)](fg:crust bg:sapphire)]($style)";
+          format = "[[ via $symbol $state \\($name\\)](fg:crust bg:sapphire)]($style)";
           style = "bg:sapphire";
           symbol = " ";
           impure_msg = "impure";
@@ -464,8 +573,7 @@ in {
         python = {
           symbol = "";
           style = "bg:green";
-          format =
-            "[[ $symbol( $version)((#$virtualenv)) ](fg:crust bg:green)]($style)";
+          format = "[[ $symbol( $version)((#$virtualenv)) ](fg:crust bg:green)]($style)";
         };
         rust = {
           symbol = "";
@@ -599,15 +707,23 @@ in {
 
   nix = {
     package = pkgs.nix;
-    settings.experimental-features = [ "nix-command" "flakes" ];
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 
   nixpkgs = {
-    config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [ "discord" ];
+    config.allowUnfreePredicate =
+      pkg:
+      builtins.elem (lib.getName pkg) [
+        "discord"
+      ];
   };
 
-  services = { protonmail-bridge.enable = isLinux; };
+  services = {
+    protonmail-bridge.enable = isLinux;
+  };
 
   dconf.settings = mkIf isLinux {
     "org/gnome/shell" = {
@@ -625,12 +741,11 @@ in {
         "spotify_spotify.desktop"
       ];
     };
-    "org/gnome/terminal/legacy/profiles:/:1d4804e8-44e6-4c2b-a37c-95789cad0e61" =
-      {
-        font = "UbuntuMono Nerd Font Mono 12";
-        use-system-font = false;
-        visible-name = "diana";
-      };
+    "org/gnome/terminal/legacy/profiles:/:1d4804e8-44e6-4c2b-a37c-95789cad0e61" = {
+      font = "UbuntuMono Nerd Font Mono 12";
+      use-system-font = false;
+      visible-name = "diana";
+    };
   };
 
   xdg.enable = false;

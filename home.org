@@ -11,7 +11,7 @@
   let
     inherit (lib) mkIf;
     inherit (lib.lists) optionals;
-    inherit (pkgs.stdenv) isDarwin isLinux;
+    inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
     homeDirectory = if isDarwin then "/Users/diana" else "/home/diana";
     <<common-packages>>
     <<linux-packages>>
@@ -189,7 +189,7 @@ environment.
     pls
     ripgrep
     <<rust-packages>>
-    silver-searcher
+    silver-searcher-ng
     telegram-desktop
     texlab # LaTeX LSP
     tmux
@@ -234,7 +234,7 @@ Linking a few articles that seem to be useful:
 
 #+NAME: nix-packages
 #+begin_src nix
-  haskellPackages.nixfmt
+  nixfmt
   nil
 #+end_src
 
@@ -385,6 +385,7 @@ Let Home Manager install and manage itself.
     launchd.enable = true;
     settings = {
       on-focused-monitor-changed = [ "move-mouse monitor-lazy-center" ];
+      default-root-container-layout = "accordion";
       workspace-to-monitor-force-assignment = {
         "1" = "built-in";
         "2" = "Dell";
