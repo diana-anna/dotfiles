@@ -94,6 +94,8 @@
     c-c++
     conda
     csv
+    (dap :variables
+         dap-enable-mouse-support t)
     django
     emacs-lisp
     git
@@ -126,7 +128,7 @@
     python
     react
     restructuredtext
-    rust
+    <<rust-layer>>
     selectric ;; makes typewriter sounds :)
     semantic
     <<shell-layer>>
@@ -159,6 +161,14 @@
   :PROPERTIES:
   :EMAIL: %(org-contacts-template-email)
   :END:")))
+#+end_src
+
+**** rust
+
+#+NAME: rust-layer
+#+begin_src emacs-lisp
+  (rust :variables
+        rustic-format-on-save t)
 #+end_src
 
 **** shell
