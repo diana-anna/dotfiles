@@ -30,6 +30,11 @@ let
     pandoc
     pls
     ripgrep
+    cargo
+    clippy
+    rust-analyzer
+    rustc
+    rustfmt
     silver-searcher
     telegram-desktop
     texlab # LaTeX LSP

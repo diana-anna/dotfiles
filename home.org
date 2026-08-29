@@ -188,6 +188,7 @@ environment.
     pandoc
     pls
     ripgrep
+    <<rust-packages>>
     silver-searcher
     telegram-desktop
     texlab # LaTeX LSP
@@ -235,6 +236,17 @@ Linking a few articles that seem to be useful:
 #+begin_src nix
   haskellPackages.nixfmt
   nil
+#+end_src
+
+**** rust
+
+#+NAME: rust-packages
+#+begin_src nix
+  cargo
+  clippy
+  rust-analyzer
+  rustc
+  rustfmt
 #+end_src
 
 **** shell layer in emacs
