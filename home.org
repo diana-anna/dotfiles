@@ -1,6 +1,7 @@
 #+TITLE: home.nix
+#+STARTUP: indent
 
-* root
+* home.nix
 :PROPERTIES:
 :header-args: :noweb yes
 :END:
@@ -172,9 +173,18 @@ environment.
     bat
     bitwarden-desktop
     btop
+    cpufetch
+    ddgr
+    deadbranch
+    delta
+    diffnav
     discord
+    doxx
     <<email-packages>>
+    fblog
     <<fonts-packages>>
+    gcc
+    glow
     graphviz # for org-roam-ui
     gnupg
     htop
@@ -187,6 +197,7 @@ environment.
     ncdu
     pandoc
     pls
+    protonmail-bridge
     ripgrep
     <<rust-packages>>
     silver-searcher-ng
@@ -194,7 +205,12 @@ environment.
     texlab # LaTeX LSP
     tmux
     tree
+    tree-sitter
+    typescript-language-server
+    uv
     vim
+    vscode-json-languageserver
+    yaml-language-server
 
     <<writeShellScriptBin>>
   ];
@@ -222,6 +238,9 @@ Linking a few articles that seem to be useful:
 
 #+NAME: fonts-packages
 #+begin_src nix
+  cascadia-code
+  fira-code
+  iosevka
   nerd-fonts.daddy-time-mono
   nerd-fonts.departure-mono
   nerd-fonts._0xproto
@@ -350,6 +369,10 @@ environment:
     <<emacs>>
 
     <<firefox>>
+
+    <<gh>>
+
+    <<gh-dash>>
 
     <<ghostty>>
 
@@ -523,6 +546,7 @@ Let Home Manager install and manage itself.
 #+begin_src nix
   direnv = {
     enable = true;
+    enableZshIntegration = true;
     nix-direnv.enable = true;
   };
 #+end_src
@@ -531,7 +555,10 @@ Let Home Manager install and manage itself.
 
 #+NAME: emacs
 #+begin_src nix
-  emacs.enable = true;
+  emacs = {
+    enable = true;
+    extraPackages = epkgs: with epkgs; [ treesit-grammars.with-all-grammars ];
+  };
 #+end_src
 
 *** firefox
@@ -561,6 +588,27 @@ firefox on my Ubuntu laptop.
   };
 #+end_src
 
+*** gh
+
+#+name: gh
+#+begin_src nix
+  gh.enable = true;
+#+end_src
+
+*** gh-dash
+
+#+name: gh-dash
+#+begin_src nix
+  gh-dash = {
+    enable = true;
+    settings = {
+      prSections = [{
+        title = "Open Pull Requests";
+        filters = "is:open";
+      }];
+    };
+  };
+#+end_src
 *** ghostty
 
 #+NAME: ghostty
@@ -568,7 +616,10 @@ firefox on my Ubuntu laptop.
   ghostty = {
     enable = isDarwin;
     package = null;
-    settings = { theme = "light:Catppuccin Latte,dark:Catppuccin Frappe"; };
+    settings = {
+      initial-command = "${pkgs.tmux}/bin/tmux new-session -A -s main";
+      theme = "light:Catppuccin Latte,dark:Catppuccin Frappe";
+    };
   };
 #+end_src
 
@@ -581,9 +632,14 @@ firefox on my Ubuntu laptop.
     package = pkgs.gitFull;
     settings = {
       commit.gpgsign = true;
+      core.pager = "delta";
+      delta.navigate = true;
+      diff.colorMoved = "zebra";
       fetch.prune = true;
       github.user = "diana-anna";
       init.defaultBranch = "main";
+      interactive.diffFilter = "delta --color-only";
+      merge.conflictStyle = "diff3";
       pull = { rebase = false; };
       push = { autoSetupRemote = true; };
       user.email = "17442895+diana-anna@users.noreply.github.com";
@@ -602,6 +658,7 @@ firefox on my Ubuntu laptop.
     enableZshIntegration = isDarwin;
   };
 #+end_src
+
 *** nix-your-shell
 
 There is no ~enableBashIntegration~ setting.
@@ -969,10 +1026,79 @@ Needed on Debian-based systems for fonts installed with nix to be usable.
 
 ** Services
 
+The service config is basically a wrapper around systemd (Linux) and launchd
+(MacOS) agents. There are way more options available to configure for launchd
+than in the service config.
+
 #+NAME: services
 #+begin_src nix
   services = {
+    <<emacs-service>>
+
+    <<gpg-agent-service>>
+
     protonmail-bridge.enable = isLinux;
+  };
+
+  <<emacs-additional-launchd>>
+#+end_src
+
+*** emacs
+
+#+name: emacs-service
+#+begin_src nix
+  emacs = {
+    enable = true;
+    defaultEditor = true;
+    extraOptions = [ "--init-dir" "~/.emacs.d.vanilla" ];
+  };
+#+end_src
+
+- the ~TERMINFO~ environment variable is needed for ~emacsclient~ to work in ghostty
+- ~KeepAlive.SuccessfulExit~ is overridden with true (in the service config, it is
+  hard-coded to false) so that I can run ~M-x kill-emacs~ if there's too much
+  going on, and launchd will automatically restart the server.
+
+  #+name: emacs-additional-launchd
+#+begin_src nix
+  launchd.agents.emacs.config = {
+    EnviornmentVariables = {
+      "TERMINFO" = "/Applications/Ghostty.app/Contents/Resources/terminfo/";
+    };
+    KeepAlive.SuccessfulExit = lib.mkForce true;
+  };
+#+end_src
+
+*** gpg-agent
+
+#+name: gpg-agent-service
+#+begin_src nix
+  gpg-agent = {
+    enable = isDarwin;
+    enableZshIntegration = true;
+    extraConfig = ''
+      allow-emacs-pinentry
+      allow-loopback-pinentry
+    '';
+  };
+#+end_src
+
+*** launchd
+
+Configuration for programs that I want to run at startup which do not have a
+service defined in home manager services. MacOS only.
+
+#+begin_src nix
+  launchd.agents.ghostty = {
+    enable = isDarwin;
+    config = {
+      Label = "ghostty";
+      Program = "/Applications/Ghostty.app/Contents/MacOS/ghostty";
+      KeepAlive = {
+        Crashed = true;
+        SuccessfulExit = true;
+      };
+    };
   };
 #+end_src
 

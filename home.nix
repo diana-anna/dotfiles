@@ -15,13 +15,25 @@ let
     bat
     bitwarden-desktop
     btop
+    cpufetch
+    ddgr
+    deadbranch
+    delta
+    diffnav
     discord
+    doxx
     mu
     emacs.pkgs.mu4e
+    fblog
+    cascadia-code
+    fira-code
+    iosevka
     nerd-fonts.daddy-time-mono
     nerd-fonts.departure-mono
     nerd-fonts._0xproto
     nerd-fonts.ubuntu-mono
+    gcc
+    glow
     graphviz # for org-roam-ui
     gnupg
     htop
@@ -35,6 +47,7 @@ let
     ncdu
     pandoc
     pls
+    protonmail-bridge
     ripgrep
     cargo
     clippy
@@ -46,7 +59,12 @@ let
     texlab # LaTeX LSP
     tmux
     tree
+    tree-sitter
+    typescript-language-server
+    uv
     vim
+    vscode-json-languageserver
+    yaml-language-server
 
     (writeShellScriptBin "full-switch" ''
       cd ~/dotfiles
@@ -325,10 +343,14 @@ in
 
     direnv = {
       enable = true;
+      enableZshIntegration = true;
       nix-direnv.enable = true;
     };
 
-    emacs.enable = true;
+    emacs = {
+      enable = true;
+      extraPackages = epkgs: with epkgs; [ treesit-grammars.with-all-grammars ];
+    };
 
     firefox = {
       enable = isDarwin;
@@ -352,10 +374,25 @@ in
       };
     };
 
+    gh.enable = true;
+
+    gh-dash = {
+      enable = true;
+      settings = {
+        prSections = [
+          {
+            title = "Open Pull Requests";
+            filters = "is:open";
+          }
+        ];
+      };
+    };
+
     ghostty = {
       enable = isDarwin;
       package = null;
       settings = {
+        initial-command = "${pkgs.tmux}/bin/tmux new-session -A -s main";
         theme = "light:Catppuccin Latte,dark:Catppuccin Frappe";
       };
     };
@@ -365,9 +402,14 @@ in
       package = pkgs.gitFull;
       settings = {
         commit.gpgsign = true;
+        core.pager = "delta";
+        delta.navigate = true;
+        diff.colorMoved = "zebra";
         fetch.prune = true;
         github.user = "diana-anna";
         init.defaultBranch = "main";
+        interactive.diffFilter = "delta --color-only";
+        merge.conflictStyle = "diff3";
         pull = {
           rebase = false;
         };
@@ -722,7 +764,32 @@ in
   };
 
   services = {
+    emacs = {
+      enable = true;
+      defaultEditor = true;
+      extraOptions = [
+        "--init-dir"
+        "~/.emacs.d.vanilla"
+      ];
+    };
+
+    gpg-agent = {
+      enable = isDarwin;
+      enableZshIntegration = true;
+      extraConfig = ''
+        allow-emacs-pinentry
+        allow-loopback-pinentry
+      '';
+    };
+
     protonmail-bridge.enable = isLinux;
+  };
+
+  launchd.agents.emacs.config = {
+    EnviornmentVariables = {
+      "TERMINFO" = "/Applications/Ghostty.app/Contents/Resources/terminfo/";
+    };
+    KeepAlive.SuccessfulExit = lib.mkForce true;
   };
 
   dconf.settings = mkIf isLinux {
