@@ -742,6 +742,21 @@ in
       };
     };
 
+    yazi = {
+      enable = true;
+      settings = {
+        mgr = {
+          show_hidden = true;
+          show_symlink = true;
+          sort_by = "natural";
+        };
+        preview = {
+          max_width = 3440;
+          max_height = 1440;
+        };
+      };
+    };
+
     zsh.enable = isDarwin;
   };
 

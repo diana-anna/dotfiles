@@ -384,6 +384,8 @@ environment:
 
     <<starship>>
 
+    <<yazi>>
+
     <<zsh>>
   };
 #+end_src
@@ -982,6 +984,26 @@ There is no ~enableBashIntegration~ setting.
           mantle = "#181825";
           crust = "#11111b";
         };
+      };
+    };
+  };
+#+end_src
+
+*** yazi
+
+#+name: yazi
+#+begin_src nix
+  yazi = {
+    enable = true;
+    settings = {
+      mgr = {
+        show_hidden = true;
+        show_symlink = true;
+        sort_by = "natural";
+      };
+      preview = {
+        max_width = 3440;
+        max_height = 1440;
       };
     };
   };
