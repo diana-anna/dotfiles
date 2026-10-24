@@ -96,7 +96,7 @@ in
   home.username = "diana";
   home.homeDirectory = homeDirectory;
 
-  home.stateVersion = "25.05"; # Please read the comment before changing.
+  home.stateVersion = "26.05"; # Please read the comment before changing.
 
   home.packages =
     common-packages ++ optionals isLinux linux-packages ++ optionals isDarwin darwin-packages;
