@@ -6,7 +6,12 @@
   homebrew = {
     enable = true;
     brews = [ "libvterm" ];
-    casks = [ "ghostty" "protonvpn" "spotify" ];
+    casks = [
+      "ghostty"
+      "proton-mail-bridge"
+      "protonvpn"
+      "spotify"
+    ];
     onActivation = {
       autoUpdate = true;
       upgrade = true;
@@ -19,42 +24,44 @@
 
   security.pam.services.sudo_local.touchIdAuth = true;
 
-  system = let
-    scriptPkgs = [ pkgs.defaultbrowser ];
-    scriptPath = pkgs.lib.makeBinPath scriptPkgs;
-  in {
-    activationScripts.postActivation.text = ''
-      export PATH="${scriptPath}:$PATH"
-      defaultbrowser firefox
-    '';
+  system =
+    let
+      scriptPkgs = [ pkgs.defaultbrowser ];
+      scriptPath = pkgs.lib.makeBinPath scriptPkgs;
+    in
+    {
+      activationScripts.postActivation.text = ''
+        export PATH="${scriptPath}:$PATH"
+        defaultbrowser firefox
+      '';
 
-    configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
+      configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
 
-    defaults = {
-      dock = {
-        appswitcher-all-displays = true;
-        autohide = true;
-        orientation = "bottom";
-        persistent-apps = [
-          { app = "/System/Applications/Apps.app"; }
-          { app = "/Applications/Ghostty.app"; }
-          { app = "/Users/diana/.nix-profile/Applications/Emacs.app"; }
-          { app = "/Users/diana/.nix-profile/Applications/Firefox.app"; }
-          { app = "/Users/diana/.nix-profile/Applications/Telegram.app"; }
-          { app = "/Users/diana/.nix-profile/Applications/Discord.app"; }
-          { app = "/Applications/Spotify.app"; }
-        ];
-        show-recents = false;
+      defaults = {
+        dock = {
+          appswitcher-all-displays = true;
+          autohide = true;
+          orientation = "bottom";
+          persistent-apps = [
+            { app = "/System/Applications/Apps.app"; }
+            { app = "/Applications/Ghostty.app"; }
+            { app = "/Users/diana/.nix-profile/Applications/Emacs.app"; }
+            { app = "/Users/diana/.nix-profile/Applications/Firefox.app"; }
+            { app = "/Users/diana/.nix-profile/Applications/Telegram.app"; }
+            { app = "/Users/diana/.nix-profile/Applications/Discord.app"; }
+            { app = "/Applications/Spotify.app"; }
+          ];
+          show-recents = false;
+        };
+        finder = {
+          _FXSortFoldersFirst = true;
+          NewWindowTarget = "Home";
+          ShowStatusBar = true;
+        };
       };
-      finder = {
-        _FXSortFoldersFirst = true;
-        NewWindowTarget = "Home";
-        ShowStatusBar = true;
-      };
+
+      primaryUser = "diana";
+
+      stateVersion = 6;
     };
-
-    primaryUser = "diana";
-
-    stateVersion = 6;
-  };
 }
