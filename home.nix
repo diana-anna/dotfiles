@@ -47,7 +47,6 @@ let
     ncdu
     pandoc
     pls
-    protonmail-bridge
     ripgrep
     cargo
     clippy
@@ -88,6 +87,7 @@ let
   ];
   linux-packages = with pkgs; [
     libvterm
+    protonmail-bridge
     signal-desktop
   ];
   darwin-packages = with pkgs; [ ];
@@ -805,6 +805,10 @@ in
       };
     };
 
+    thunderbird = {
+      enable = true;
+    };
+
     yazi = {
       enable = true;
       settings = {
@@ -868,6 +872,18 @@ in
       "TERMINFO" = "/Applications/Ghostty.app/Contents/Resources/terminfo/";
     };
     KeepAlive.SuccessfulExit = lib.mkForce true;
+  };
+
+  launchd.agents.ghostty = {
+    enable = isDarwin;
+    config = {
+      Label = "ghostty";
+      Program = "/Applications/Ghostty.app/Contents/MacOS/ghostty";
+      KeepAlive = {
+        Crashed = true;
+        SuccessfulExit = true;
+      };
+    };
   };
 
   dconf.settings = mkIf isLinux {

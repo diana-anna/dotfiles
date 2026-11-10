@@ -34,6 +34,8 @@
 
     <<services>>
 
+    <<launchd>>
+
     <<dconf-settings>>
 
     <<xdg>>
@@ -197,7 +199,6 @@ environment.
     ncdu
     pandoc
     pls
-    protonmail-bridge
     ripgrep
     <<rust-packages>>
     silver-searcher-ng
@@ -303,6 +304,7 @@ leaving this here as an example of overrides.
 #+begin_src nix
   linux-packages = with pkgs; [
     libvterm
+    protonmail-bridge
     signal-desktop
   ];
 #+end_src
@@ -383,6 +385,8 @@ environment:
     <<lsd>>
 
     <<starship>>
+
+    <<thunderbird>>
 
     <<yazi>>
 
@@ -1044,6 +1048,15 @@ There is no ~enableBashIntegration~ setting.
   };
 #+end_src
 
+*** thunderbird
+
+#+name: thunderbird
+#+begin_src nix
+  thunderbird = {
+    enable = true;
+  };
+#+end_src
+
 *** yazi
 
 #+name: yazi
@@ -1160,11 +1173,12 @@ than in the service config.
   };
 #+end_src
 
-*** launchd
+** launchd
 
 Configuration for programs that I want to run at startup which do not have a
 service defined in home manager services. MacOS only.
 
+#+name: launchd
 #+begin_src nix
   launchd.agents.ghostty = {
     enable = isDarwin;
