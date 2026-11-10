@@ -21,7 +21,7 @@ let
     delta
     diffnav
     discord
-    doxx
+    # doxx
     mu
     emacs.pkgs.mu4e
     fblog

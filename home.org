@@ -181,7 +181,7 @@ environment.
     delta
     diffnav
     discord
-    doxx
+    # doxx
     <<email-packages>>
     fblog
     <<fonts-packages>>
